@@ -36,8 +36,8 @@
 % Dependiendo de las partes de la plantilla, a veces aparecerán tal
 % cual los escribas, a veces totalmente en mayúsculas, a veces de otras
 % formas
-\title{Título del Trabajo con Letras Mayúsculas para Sustantivos y Adjetivos}
-\author{Nombre del autor / autora}
+\title{Mapas de Terreno para Realidad Virtual}
+\author{José Fuhui Pérez Contreras}
 
 % Guarda el título, el autor y la fecha en variables
 \makeatletter
@@ -68,11 +68,11 @@ ESCUELA DE INGENIERÍA DE FUENLABRADA
 \vspace{1cm}
 
 \LARGE
-TITULACIÓN EN MAYÚSCULAS
+GRADO EN INGENIERÍA TELEMÁTICA
 
 \vspace{1cm}
 \LARGE
-\textbf{TRABAJO FIN DE GRADO/MÁSTER}
+\textbf{TRABAJO FIN DE GRADO}
 
 \vspace{2cm}
 
@@ -83,12 +83,11 @@ TITULACIÓN EN MAYÚSCULAS
 
 \large
 Autor : \theauthor \\
-Tutor : Dr. Nombre del Profesor/a\\
-Cotutor: (si procede)
+Tutor : Dr. David Moreno Lumbreras\\
 \vspace{1cm}
 
 \large
-Curso académico 202X/202X
+Curso académico 2024/2025
 
 \end{center}
 \end{titlepage}
@@ -130,7 +129,7 @@ disponible en \\
 \pagenumbering{Roman} % para comenzar la numeracion de paginas en numeros romanos
 \begin{flushright}
 \textit{Dedicado a \\
-mi familia / mi abuelo / mi abuela}
+mis padres}
 \end{flushright}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,8 +139,9 @@ mi familia / mi abuelo / mi abuela}
 %\addcontentsline{toc}{chapter}{Agradecimientos} % si queremos que aparezca en el índice
 \markboth{AGRADECIMIENTOS}{AGRADECIMIENTOS} % encabezado 
 
-Aquí vienen los agradecimientos\ldots Aunque está bien acordarse de la pareja, no hay que olvidarse de dar las gracias a tu madre, que aunque a veces no lo parezca disfrutará tanto de tus logros como tú\ldots 
-Además, la pareja quizás no sea para siempre, pero tu madre sí.
+Quiero agradecer a todas las personas que me han ayudado a lo largo de mi carrera, y en especial a mis amigos de clase
+y a mi tutor, David, por su apoyo y ayuda en la realización de este trabajo. También quiero agradecer a mis padres por su apoyo incondicional 
+y por haberme dado la oportunidad de estudiar en esta universidad.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Resumen
@@ -150,17 +150,33 @@ Además, la pareja quizás no sea para siempre, pero tu madre sí.
 %\addcontentsline{toc}{chapter}{Resumen} % si queremos que aparezca en el índice
 \markboth{RESUMEN}{RESUMEN} % encabezado
 
-Aquí viene un resumen del proyecto.
-Ha de constar de tres o cuatro párrafos, donde se presente de manera clara y concisa de qué va el proyecto. 
-Han de quedar respondidas las siguientes preguntas:
+Este proyecto tiene como objetivo la creación de un componente en tres dimensiones compatible
+con la realidad virtual. El componente utiliza \textit{APIS} de \textit{Mapbox} y \textit{OpenStreetMap} 
+para la creación de mapas de terreno en tres dimensiones. Se pretende que el componente
+pueda ser utilizado en aplicaciones de realidad virtual y que sea fácil de integrar
+en otros proyectos.
 
-\begin{itemize}
-  \item ¿De qué va este proyecto? ¿Cuál es su objetivo principal?
-  \item ¿Cómo se ha realizado? ¿Qué tecnologías están involucradas?
-  \item ¿En qué contexto se ha realizado el proyecto? ¿Es un proyecto dentro de un marco general?
-\end{itemize}
+El componente se ha desarrollado utilizando \textit{JavaScript} y \textit{HTML}, apoyándose en
+los entornos de trabajo de \textit{Node.js}, \textit{A-Frame} (y, por tanto, \textit{WebGL} y \textit{Three.js}) y \textit{BabiaXR}.
+La intención es que esté disponible en la web para que cualquier persona pueda
+utilizarlo y contribuir a su desarrollo.
 
-Lo mejor es escribir el resumen al final.
+Los mapas son una herramienta muy útil para la visualización de datos y la
+navegación en entornos tridimensionales. Durante toda la historia se han valorado
+los mapas como una herramienta fundamental para la exploración y el
+conocimiento del mundo. En la actualidad, con el auge de la realidad virtual y la
+realidad aumentada, los mapas han cobrado una nueva dimensión y se están convirtiendo
+en una herramienta esencial para la creación de experiencias inmersivas. Es por
+ello que pienso que este proyecto es relevante y puede tener un impacto
+significativo en el campo de la realidad virtual y la visualización de datos.
+
+% \begin{itemize}
+%   \item ¿De qué va este proyecto? ¿Cuál es su objetivo principal?
+%   \item ¿Cómo se ha realizado? ¿Qué tecnologías están involucradas?
+%   \item ¿En qué contexto se ha realizado el proyecto? ¿Es un proyecto dentro de un marco general?
+% \end{itemize}
+
+% Lo mejor es escribir el resumen al final.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Resumen en inglés
@@ -169,9 +185,25 @@ Lo mejor es escribir el resumen al final.
 %\addcontentsline{toc}{chapter}{Summary} % si queremos que aparezca en el índice
 \markboth{SUMMARY}{SUMMARY} % encabezado
 
-Here comes a translation of the ``Resumen'' into English. 
-Please, double check it for correct grammar and spelling.
-As it is the translation of the ``Resumen'', which is supposed to be written at the end, this as well should be filled out just before submitting.
+This project aims to create a three-dimensional component compatible
+with virtual reality. The component uses APIs from \textit{Mapbox} and \textit{OpenStreetMap} 
+to generate three-dimensional terrain maps. The goal is for the component
+to be usable in virtual reality applications and to be easy to integrate
+into other projects.
+
+The component has been developed using \textit{JavaScript} and \textit{HTML}, relying on
+the \textit{Node.js}, \textit{A-Frame} (and therefore \textit{WebGL} and \textit{Three.js}) and \textit{BabiaXR}
+frameworks. The intention is to make it available on the web so that anyone can
+use it and contribute to its development.
+
+Maps are a very useful tool for data visualization and
+navigation in three-dimensional environments. Throughout history, maps have been valued
+as a fundamental tool for exploration and
+understanding of the world. Nowadays, with the rise of virtual reality and
+augmented reality, maps have taken on a new dimension and are becoming
+an essential tool for creating immersive experiences. That is
+why I believe this project is relevant and may have a significant impact
+in the field of virtual reality and data visualization.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
