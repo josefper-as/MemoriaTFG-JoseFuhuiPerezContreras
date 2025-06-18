@@ -36,7 +36,7 @@
 % Dependiendo de las partes de la plantilla, a veces aparecerán tal
 % cual los escribas, a veces totalmente en mayúsculas, a veces de otras
 % formas
-\title{Mapas de Terreno para Realidad Virtual}
+\title{Mapas de Terreno para Realidad Extendida}
 \author{José Fuhui Pérez Contreras}
 
 % Guarda el título, el autor y la fecha en variables
@@ -700,40 +700,173 @@ Estas herramientas, si bien no sustituyen el conocimiento técnico, han servido 
 \chapter{Diseño e implementación}
 \label{sec:diseno}
 
-Aquí viene todo lo que has hecho tú (tecnológicamente). 
-Puedes entrar hasta el detalle. 
-Es la parte más importante de la memoria, porque describe lo que has hecho tú.
-Eso sí, normalmente aconsejo no poner código, sino diagramas.
+% Aquí viene todo lo que has hecho tú (tecnológicamente). 
+% Puedes entrar hasta el detalle. 
+% Es la parte más importante de la memoria, porque describe lo que has hecho tú.
+% Eso sí, normalmente aconsejo no poner código, sino diagramas.
 
+Durante el mes de septiembre de 2024 inicié el contacto con mi tutor de Trabajo de Fin de Grado con el objetivo de plantear una propuesta de proyecto basada en la tecnología A-Frame. La elección de esta tecnología estuvo motivada por varios factores. En primer lugar, ya existía una base previa de desarrollo gracias al proyecto \textit{BabiaXR}, realizado por personal docente de la Universidad, lo cual me permitiría apoyarme en ejemplos funcionales y resolver dudas de forma más ágil. En segundo lugar, A-Frame ofrecía un campo aún por explorar en profundidad en distintos aspectos de la realidad extendida, lo que abría la posibilidad de aportar una solución original y útil.
 
+Finalmente, me decanté por diseñar un visor de mapas tridimensionales para realidad extendida, compatible tanto con realidad virtual como con realidad aumentada. La representación de mapas en entornos de realidad virtual presenta diversos desafíos: muchos de los visores existentes son complejos de manejar, poco interactivos o requieren una gran cantidad de recursos computacionales. El objetivo de este trabajo ha sido desarrollar un componente personalizado, llamado \texttt{babia-map}, que permita representar mapas en 3D de forma eficiente y accesible en A-Frame, optimizando tanto la experiencia de usuario como el rendimiento gráfico.
+
+Para lograr este objetivo, fue imprescindible adquirir un conocimiento detallado sobre el funcionamiento interno de A-Frame. Esta herramienta está construida sobre la librería gráfica \texttt{three.js}, que ofrece una capa de abstracción para desarrollar experiencias WebXR utilizando HTML y componentes declarativos. A lo largo del desarrollo, fue necesario aprender a manipular directamente tanto entidades de A-Frame como estructuras nativas de \texttt{three.js}, incluyendo geometrías, materiales, texturas y sombreadores (\textit{shaders}).
+
+El código fuente se debía realizar en JavaScript, pues A-Frame funciona dentro de HTML. \textit{NodeJS} se puede definir como el \textit{software} para JavaScript equivalente a lo que es \textit{Django} para \textit{Python}. Se utilizaron varios comandos cada vez que se accedía al entorno de desarrollo. Primeramente se realizó un fork del proyecto original y después se clonó el repositorio en local.
+
+Para utilizar \textit{NodeJS} se necesita el comando \texttt{nvm}. Con el comando \texttt{nvm use stable} se establecería la versión actual de \textit{NodeJS} en el directorio de trabajo. En mi caso, he estado trabajando con una versión más antigua, así que he utilizado el comando \texttt{nvm use 21.7.1}. Es necesario ejecutar este comando por cada terminal nueva que se despliegue, pues la versión configurada por defecto no tiene por qué ser esta. Para comprobar la versión, es necesario utilizar el comando \texttt{nvm ls}. 
+
+Nada más clonar el repositorio, fue imprescindible realizar un \texttt{npm install} en el directorio del repositorio, lo que instaló todas las dependencias especificadas en el fichero llamado \texttt{aframe-babia-components/package.json}. Se puede definir el comando \texttt{npm} como el equivalente en JavaScript de \texttt{pip} en Python.
+
+Es muy importante ejecutar el comando \texttt{npm run dist} cada vez que se modifique un componente para poder actualizar el directorio de distribuciones. Para trabajar en el servidor, el comando para lanzarlo es \texttt{npm run ssldev}.
+
+\section{Proceso de formación} 
+\label{sec:formacion}
+
+Desde octubre de 2024 hasta enero de 2025, dediqué una fase inicial a experimentar con componentes existentes del ecosistema BabiaXR, lo cual me permitió familiarizarme con la lógica de desarrollo modular de A-Frame. Esta fase incluyó pruebas en local, modificaciones de componentes ya existentes y la exploración de nuevas funcionalidades.
+
+En diciembre de 2024 recibí unas gafas Meta Quest 3, lo que marcó un punto de inflexión en el proyecto: a partir de entonces pude visualizar los resultados del desarrollo directamente en un entorno de realidad virtual, lo cual facilitó significativamente la detección de errores de usabilidad, escalado, perspectiva o rendimiento.
+
+Uno de los primeros pasos técnicos fue realizar una revisión de componentes similares ya disponibles. Entre ellos, encontré \texttt{aterrain}, un componente para generar terreno 3D en A-Frame basado en mapas de altura (\textit{heightmaps}). Sin embargo, este componente estaba obsoleto, sin mantenimiento activo desde hacía varios años, y resultaba difícil de modificar o ampliar. Esta limitación me llevó a desarrollar una solución propia desde cero, basada en un enfoque más flexible y adaptado a los requerimientos actuales de WebXR.
+
+% [SUGERENCIA: Insertar aquí una tabla comparativa o breve análisis entre aterrain y la nueva solución propuesta]
+% \begin{table}
+%   \centering
+%   \begin{tabular}{lcc}
+%     \toprule
+%     \textbf{Característica} & \texttt{aterrain} & \texttt{babia-map} \\
+%     \midrule
+%     Última actualización & 2018 & 2025 \\
+%     Modificable por el usuario & Limitado & Totalmente flexible \\
+%     Compatibilidad con WebXR moderna & Parcial & Completa \\
+%     Soporte para sombreadores personalizados & No & Sí \\
+%     \bottomrule
+%   \end{tabular}
+%   \caption{Comparativa entre \texttt{aterrain} y \texttt{babia-map}}
+%   \label{tab:comparativa}
+% \end{table}
+
+En paralelo, comencé a investigar cómo obtener y renderizar teselas virtuales (\textit{tiles}) que sirvieran como base para construir el mapa tridimensional. Esta búsqueda me llevó a estudiar el uso de mapas de altura codificados en imágenes RGB, así como técnicas de sombreado utilizando \texttt{WebGL} para representar distintas elevaciones y biomas de forma visual.
+
+Gran parte del conocimiento adquirido provino de la consulta de recursos disponibles en línea, especialmente vídeos tutoriales que explicaban el proceso de generación de mallas tridimensionales a partir de mapas de altura, así como su posterior coloración mediante sombreadores. Estos recursos fueron esenciales para entender cómo convertir una imagen en una geometría modificable y cómo aplicar efectos visuales mediante programación gráfica.
+
+% [SUGERENCIA: Añadir enlaces en un apéndice o sección de recursos complementarios a los vídeos más relevantes]
+% \begin{itemize}
+%   \item Tutorial sobre terrain mesh y heightmaps: \url{https://www.youtube.com/watch?v=XXXXXX}
+%   \item Introducción a shaders en WebGL: \url{https://www.youtube.com/watch?v=YYYYYY}
+% \end{itemize}
+
+A continuación, muestro las tareas que se propusieron para esta primera fase del proyecto:
+
+\vspace{1em}
+\textbf{Tareas a realizar}
+
+\begin{itemize}
+    \item \textbf{Datos}
+    \begin{itemize}
+        \item Conseguir datos geolocalizados (\textit{GeoJSON}).
+        \item Transformar datos a listas de objetos \textit{JSON}.
+        \item Buscar servicios de teselas virtuales.
+    \end{itemize}
+    \item \textbf{Exploratorio}
+    \begin{itemize}
+        \item Buscar componentes \textit{A-Frame} que muestren mapas (seguramente ya haya cosas hechas en GitHub).
+        \item Bibliotecas JavaScript para crear mapas (por ejemplo, \textit{OpenStreetMap}). Esto se refleja en el apartado~\ref{chap:estado} de \underline{Estado del Arte} (cosas que ya se han hecho).
+    \end{itemize}
+    \item \textbf{Desarrollo}
+    \begin{itemize}
+        \item Desarrollar el componente \textit{babia-map}. En este caso específico se utilizó el fichero \texttt{aframe-babia-components/components/visualizers/babia-map.js}, especificado en \texttt{aframe-babia-components/index.js}. Para integrar todo en la página local, se debió añadir en \texttt{aframe-babia-components/index.html}.
+        \item Se necesitará utilizar:
+        \begin{itemize}
+            \item Babia XR.
+            \item A-Frame Components.
+            \item Bibliotecas JS/HTML/A-Frame.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+Luego, las tareas acabaron en el siguiente estado:
+
+\vspace{1em}
+\textbf{Tareas realizadas}
+
+\vspace{0.5em}
+\textbf{GeoJSON}
+
+Se revisaron los fundamentos del formato \textit{GeoJSON}, una especificación en JavaScript que permite representar distintos tipos de geometrías (puntos, líneas, polígonos, multipuntos, multilíneas y multipolígonos). Cada uno de estos elementos se definía mediante tres atributos principales: tipo, geometría y propiedades. Además, se tuvo en cuenta el uso del atributo \textit{Bounding Box}, empleado para delimitar el espacio de un objeto y agilizar su consulta. La referencia principal fue el RFC 7946 (\url{https://datatracker.ietf.org/doc/html/rfc7946}), donde también se establecía que el sistema de coordenadas utilizado era WGS 84.
+
+\vspace{0.5em}
+\textbf{Componentes \textit{A-Frame} para mapas}
+
+Durante el desarrollo, se exploró el uso del componente \textit{a-terrain}, actualizado por última vez hace seis años. Para su integración en el repositorio del proyecto Babia, se creó el fichero \texttt{dist/aframe-aterrain-components.js} y se añadió un directorio \texttt{js} con el archivo \texttt{examples/js/aframe-orbit-controls-component.js}. También se configuró una vista de pruebas en la página principal dentro del directorio \texttt{aframe-babia-components/examples/demos/test/}, con el objetivo de visualizar los resultados del componente.
+
+Se siguieron las instrucciones de instalación recogidas en la documentación del componente (\url{https://github.com/anselm/aterrain/tree/master}), aunque se detectaron incompatibilidades con versiones recientes de la librería \textit{three}, lo que generó dudas sobre la funcionalidad total del componente en entornos actuales.
+
+Finalmente, tras comprender que el esfuerzo de integrar cambios en un código plenamente desarrollado podía ser mayor que utilizar las herramientas y versiones modernas de A-Frame, se descartó usar este componente externo a BabiaXR.
+
+\vspace{0.5em}
+\textbf{Librería de JavaScript para mapas}
+
+Se estudió el uso de \textit{OpenStreetMap} (OSM) en conjunto con la librería \textit{Leaflet}, una herramienta de código abierto ampliamente utilizada para representar mapas interactivos en la web. La documentación consultada fue la disponible en su página oficial (\url{https://leafletjs.com/reference.html}).
+
+Leaflet es una librería muy precisa y útil para desarrollar en JavaScript; sin embargo, no sería de utilidad para componentes en tres dimesiones. Fue entonces cuando se comprendió la necesidad de encontrar una solución que trabajara directamente con OSM.
+
+\vspace{0.5em}
+\textbf{Teselas virtuales}
+
+Se investigó la plataforma MapTiler (\url{https://docs.maptiler.com/sdk-js/examples/3d-map/}), que ofrecía APIs para obtener teselas con datos geoespaciales. Se creó una cuenta personal y se generó una clave de acceso para la API. Asimismo, se instaló el paquete correspondiente mediante \texttt{npm install --save @maptiler/sdk}, como paso previo a la integración con el proyecto.
+
+Un \textit{SDK} (\textit{Software Development Kit}, o kit de desarrollo de software) es un conjunto de herramientas, bibliotecas, documentación y ejemplos que permiten a los desarrolladores integrar funcionalidades específicas en sus propias aplicaciones de forma más sencilla y eficiente. En este proyecto se planteó la utilización de \textit{MapTiler SDK for JavaScript}, una biblioteca que proporciona interfaces para incorporar mapas interactivos, capas geoespaciales y servicios de teselas en aplicaciones web.
+
+El uso de un SDK como el de MapTiler facilita tareas complejas como la gestión de teselas, las proyecciones geográficas, la interacción con el usuario o la carga dinámica de datos cartográficos. Gracias a esta abstracción, el desarrollo se vuelve más ágil y centrado en la lógica propia del proyecto, sin necesidad de implementar desde cero un motor de visualización geoespacial.
+
+No obstante, esta solución solo funciona para un desarrollador. Para utilizar algo visible en la web para cualquier usuario, era necesario la utilización de sus diversas APIs.
+
+\vspace{0.5em}
+\textbf{Uso de \textit{Three.js} y mapas de altura}
+
+Se revisó el funcionamiento de \textit{Three.js}, la librería sobre la que se construye \textit{A-Frame}, para representar terrenos tridimensionales mediante el uso de mapas de altura. Estos mapas consistían en imágenes en blanco y negro donde el valor de gris indicaba la altitud relativa.
+
+Se experimentó con propiedades como \texttt{displacementMap} o \texttt{bumpTexture} para referenciar la imagen del mapa, y \texttt{displacementScale} o \texttt{bumpScale} para controlar la escala del relieve. Además, se utilizaron los atributos \texttt{width} y \texttt{height} para definir las dimensiones del plano.
+
+Para representar distintos biomas según la elevación, se aplicaron \textit{shaders} personalizados, adaptados a partir de varios tutoriales encontrados en YouTube: \textit{How to quickly make terrain using a heightmap three.js} (https://www.youtube.com/watch?v=wULUAhckH9w) y \textit{How to color terrain from heightmap three.js} (https://www.youtube.com/watch?v=G0hWjD0n46c). Estos shaders permitían colorear automáticamente el terreno con zonas de agua, vegetación, roca o nieve, basándose en el valor de altura normalizado entre 0.0 y 1.0.
+
+\vspace{0.5em}
+\textbf{Acceso a imágenes RGB desde la API de MapBox}
+
+Finalmente, se revisaron los formatos de acceso a datos cartográficos. Se distinguió entre los formatos de teselas de OpenStreetMap (\url{https://tile.openstreetmap.org/zoom/x/y.png}) y los de elevación disponibles a través de Mapbox, que permiten obtener imágenes RGB donde la codificación del color representa la altura.
+
+La documentación de referencia fue \url{https://docs.mapbox.com/api/maps/raster-tiles/}, y se consultó un ejemplo práctico desde \url{https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/}. Se probó el uso del parámetro opcional \texttt{@2x}, que permite solicitar imágenes de mayor resolución (512x512) en lugar de las predeterminadas (256x256), con el objetivo de reducir el número total de solicitudes al cubrir un área más amplia por imagen.
 
 \section{Arquitectura general} 
 \label{sec:arquitectura}
 
-Si tu proyecto es un software, siempre es bueno poner la arquitectura (que es cómo se estructura tu programa a ``vista de pájaro'').
+% Si tu proyecto es un software, siempre es bueno poner la arquitectura (que es cómo se estructura tu programa a ``vista de pájaro'').
 
-\begin{figure}
-  \centering
-  \includegraphics[width=9cm, keepaspectratio]{img/arquitectura.png}
-  \caption{Estructura del parser básico}
-  \label{fig:arquitectura}
-\end{figure}
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=9cm, keepaspectratio]{img/arquitectura.png}
+%   \caption{Estructura del parser básico}
+%   \label{fig:arquitectura}
+% \end{figure}
 
 
-Por ejemplo, puedes verlo en la figura~\ref{fig:arquitectura}.
-\LaTeX \ pone las figuras donde mejor cuadran. 
-Y eso quiere decir que quizás no lo haga donde lo hemos puesto\ldots 
-Eso no es malo.
-A veces queda un poco raro, pero es la filosofía de \LaTeX: tú al contenido, que yo me encargo de la maquetación.
+% Por ejemplo, puedes verlo en la figura~\ref{fig:arquitectura}.
+% \LaTeX \ pone las figuras donde mejor cuadran. 
+% Y eso quiere decir que quizás no lo haga donde lo hemos puesto\ldots 
+% Eso no es malo.
+% A veces queda un poco raro, pero es la filosofía de \LaTeX: tú al contenido, que yo me encargo de la maquetación.
 
 
  
-Recuerda que toda figura que añadas a tu memoria debe ser explicada.
-Sí, aunque te parezca evidente lo que se ve en la figura~\ref{fig:arquitectura}, la figura en sí solamente es un apoyo a tu texto.
-Así que explica lo que se ve en la figura, haciendo referencia a la misma tal y como ves aquí.
-Por ejemplo: En la figura~\ref{fig:arquitectura} se puede ver que la estructura del \emph{parser} básico, que consta de seis componentes diferentes: los datos se obtienen de la red, y según el tipo de dato, se pasará a un \emph{parser} específico y bla, bla, bla\ldots
+% Recuerda que toda figura que añadas a tu memoria debe ser explicada.
+% Sí, aunque te parezca evidente lo que se ve en la figura~\ref{fig:arquitectura}, la figura en sí solamente es un apoyo a tu texto.
+% Así que explica lo que se ve en la figura, haciendo referencia a la misma tal y como ves aquí.
+% Por ejemplo: En la figura~\ref{fig:arquitectura} se puede ver que la estructura del \emph{parser} básico, que consta de seis componentes diferentes: los datos se obtienen de la red, y según el tipo de dato, se pasará a un \emph{parser} específico y bla, bla, bla\ldots
 
-Si utilizas una base de datos, no te olvides de incluir también un diagrama de entidad-relación.
+% Si utilizas una base de datos, no te olvides de incluir también un diagrama de entidad-relación.
+
+Una vez terminada la fase de formación, comencé a desarrollar el componente como tal. Aprovechando la capacidad de \textit{Three.js} de crear mallas capaces de simular un terreno gracias a una imagen en blanco en negro, se utilizó la API de MapBox para obtener una imagen de un mapa en formato RGB. Lo que faltaba era convertir esa imagen a escala de grises para que \textit{Three.js} por sí solo fuese capaz de interpretar la información.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -830,9 +963,135 @@ Es un apartado que sirve para dar ideas de cara a futuros TFGs/TFMs.
 \chapter{Manual de usuario}
 \label{app:manual}
 
-Esto es un apéndice.
-Si has creado una aplicación, siempre viene bien tener un manual de usuario.
-Pues ponlo aquí.
+% Esto es un apéndice.
+% Si has creado una aplicación, siempre viene bien tener un manual de usuario.
+% Pues ponlo aquí.
+
+\section{Uso del componente \texttt{babiaxr}}
+
+El componente \texttt{babiaxr} permite añadir una interfaz interactiva de botones en un entorno de realidad virtual para controlar el mapa 3D generado por \texttt{babia-map}. Esta interfaz puede vincularse a las manos del usuario o posicionarse libremente en el entorno, permitiendo interacciones como zoom, cambio de capa y desplazamiento del mapa.
+
+\subsection*{Propiedades generales}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|p{9cm}|}
+\hline
+\textbf{Propiedad} & \textbf{Tipo (por defecto)} & \textbf{Descripción} \\
+\hline
+\texttt{handsUi} & boolean (true) & Habilita o deshabilita los botones en las manos VR. \\
+\texttt{coordinates} & vec2 & Coordenadas actuales del mapa apuntadas por la mano izquierda. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Transformaciones de grupos de botones}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|p{9cm}|}
+\hline
+\textbf{Propiedad} & \textbf{Tipo} & \textbf{Descripción} \\
+\hline
+\texttt{entityRightButton} & string (JSON) & Posición y rotación del grupo de botones de la mano derecha. \\
+\texttt{entityLeftButton} & string (JSON) & Posición y rotación del grupo de botones de la mano izquierda. \\
+\texttt{crossEntity} & string (JSON) & Posición y rotación del grupo de botones direccionales. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Contenido de los grupos de botones}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|p{9cm}|}
+\hline
+\textbf{Propiedad} & \textbf{Tipo} & \textbf{Descripción} \\
+\hline
+\texttt{rightButtons} & string (JSON array) & Botones de zoom. \\
+\texttt{leftButtons} & string (JSON array) & Botones de cambio de capa. \\
+\texttt{crossButtons} & string (JSON array) & Botones de desplazamiento (arriba, abajo, izquierda, derecha). \\
+\texttt{coordinatesText} & string (JSON) & Configuración de estilo para el texto flotante de coordenadas. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Formato de cada botón}
+
+Cada botón se define como un objeto en formato JSON con los siguientes campos:
+
+\begin{quote}
+\small
+\texttt{\char123}\\
+\quad \texttt{"icon": "",}\\
+\quad \texttt{"id": "zoomIn",}\\
+\quad \texttt{"text": "Zoom +",}\\
+\quad \texttt{"action": "zoomIn"}\\
+\texttt{\char125}
+\end{quote}
+
+\textbf{Descripción de campos:}
+
+\begin{itemize}
+  \item \texttt{icon}: (opcional) símbolo visual o carácter. No obligatorio.
+  \item \texttt{id}: identificador único del botón.
+  \item \texttt{text}: texto mostrado en el botón.
+  \item \texttt{action}: acción que se ejecuta al pulsar el botón.
+\end{itemize}
+
+\subsection*{Ejemplo de configuración en HTML}
+
+A continuación se muestra un ejemplo de configuración del componente \texttt{babiaxr} dentro de una entidad \texttt{a-entity}:
+
+\begin{quote}
+\small
+\begin{verbatim}
+<a-entity babia-map='
+  handsUi: false;
+  entityRightButton: {"position":"0.6 4 3", "rotation":"30 0 0"};
+  entityLeftButton: {"position":"-1 3.7 3", "rotation":"30 0 0"};
+  crossEntity: {"position":"-0.15 3.3 3", "rotation":"30 0 0"};
+  rightButtons: [
+    {"id":"zoomIn","text":"Zoom +","action":"zoomIn"},
+    {"id":"zoomOut","text":"Zoom -","action":"zoomOut"}
+  ];
+  leftButtons: [
+    {"id":"layerRelief","text":"Relieve","action":"elevation"},
+    {"id":"layerSat","text":"Satélite","action":"satellite"}
+    ];
+  crossButtons: [
+    {"id":"left","text":"Izquierda","action":"left"},
+    {"id":"right","text":"Derecha","action":"right"},
+    {"id":"up","text":"Arriba","action":"up"},
+    {"id":"down","text":"Abajo","action":"down"}
+    ];
+  coordinatesText: {"position":"0 0.2 0","rotation":"-30 0 0",
+    "scale":"0.3 0.3 0.3","color":"#ffffff","align":"center"}
+'>
+</a-entity>
+\end{verbatim}
+\end{quote}
+
+\subsection*{Eventos disponibles}
+
+Los botones del componente \texttt{babiaxr} responden a los siguientes eventos de A-Frame:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Evento} & \textbf{Efecto} \\
+\hline
+\texttt{click} & Ejecuta la acción asociada al botón. \\
+\texttt{mouseenter} & Resalta el botón al pasar el puntero por encima. \\
+\texttt{mouseleave} & Restaura el estilo del botón al salir el puntero. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Compatibilidad con manos y VR}
+
+Si la propiedad \texttt{handsUi} está activada, los grupos de botones se adjuntan automáticamente a las entidades con identificador \texttt{leftHand} y \texttt{rightHand}, que representan las manos del usuario en dispositivos de realidad virtual con seguimiento de manos. Los botones pueden activarse mediante punteros láser o interacción directa en el espacio tridimensional.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
