@@ -21,7 +21,8 @@
 %\usepackage[T1]{fontenc}
 
 \usepackage[a4paper, left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
-\usepackage{times}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel} % Comenta esta línea si tu memoria es en inglés
 \usepackage{url}
@@ -30,6 +31,8 @@
 \usepackage{float}  %% H para posicionar figuras
 \usepackage[nottoc, notlot, notlof, notindex]{tocbibind} %% Opciones de índice
 \usepackage{latexsym}  %% Logo LaTeX
+\usepackage{amsmath}
+\usepackage{longtable}
 
 % Escribe el título y el nombre del autor / autora para que se use bien
 % en otras partes de la plantilla
@@ -460,7 +463,7 @@ A continución, se muestra un diagrama de Gantt del proceso completo:
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{img/gantt.png}
+  \includegraphics[width=\textwidth]{img/tfg.png}
   \caption{Diagrama de Gantt del TFG.}
   \label{fig:gantt}
 \end{figure}
@@ -867,7 +870,231 @@ La documentación de referencia fue \url{https://docs.mapbox.com/api/maps/raster
 
 Una vez terminada la fase de formación, comencé a desarrollar el componente como tal. Aprovechando la capacidad de \textit{Three.js} de crear mallas capaces de simular un terreno gracias a una imagen en blanco en negro, se utilizó la API de MapBox para obtener una imagen de un mapa en formato RGB. Lo que faltaba era convertir esa imagen a escala de grises para que \textit{Three.js} por sí solo fuese capaz de interpretar la información.
 
+Durante esta fase del desarrollo, el componente \texttt{babiaxr} fue diseñado con una serie de propiedades configurables que permiten ajustar tanto la geometría del terreno como las texturas empleadas para su visualización en tiempo real. A continuación se describen las propiedades disponibles:
 
+\begin{longtable}{|l|l|l|p{8cm}|}
+\caption{Propiedades definidas en el componente \texttt{babiaxr}} \label{tab:babiaxr-properties} \\
+\hline
+\textbf{Propiedad} & \textbf{Tipo} & \textbf{Valor por defecto} & \textbf{Descripción} \\
+\hline
+\endfirsthead
+
+\multicolumn{4}{c}%
+{\tablename\ \thetable\ -- \textit{Continuación de la página anterior}} \\
+\hline
+\textbf{Propiedad} & \textbf{Tipo} & \textbf{Valor por defecto} & \textbf{Descripción} \\
+\hline
+\endhead
+
+\hline \multicolumn{4}{r}{\textit{Continúa en la siguiente página}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+\texttt{width} & number & 1000 & Anchura total del plano que representa el terreno, en unidades del sistema de coordenadas de A-Frame. \\
+\texttt{height} & number & 1000 & Altura total del plano del terreno. \\
+\texttt{horTexture} & number & 2 & Número de teselas horizontales que se cargarán y dispondrán en el terreno. \\
+\texttt{vertTexture} & number & 2 & Número de teselas verticales. En combinación con \texttt{horTexture}, define una malla de \texttt{n} $\times$ \texttt{m} imágenes. \\
+\texttt{widthSegments} & int & 200 & Número de subdivisiones horizontales del plano, importante para un desplazamiento de vértices más suave. \\
+\texttt{heightSegments} & int & 200 & Subdivisiones verticales del plano. Cuantos más segmentos, mayor detalle en el relieve. \\
+\texttt{bumpScale} & number & 300 & Factor de escala para la elevación en el mapa de alturas. Define cuánto sobresale el relieve respecto al plano original. \\
+\texttt{wireframe} & boolean & false & Permite renderizar el terreno como una malla en forma de alambre (wireframe), útil para depuración o estilo técnico. \\
+\texttt{token} & string & --- & Clave de acceso (API Token) necesaria para servicios que lo requieren, como Mapbox. \\
+\texttt{subdomain} & string & ``a'' & Subdominio utilizado en servicios como Thunderforest, que distribuyen la carga en subdominios (\texttt{a}, \texttt{b}, \texttt{c}). \\
+\texttt{textureType} & string & ``Standard'' & Tipo de textura a utilizar: \texttt{Standard}, \texttt{Satellite}, \texttt{Hot}, \texttt{Cycle} o \texttt{Transport}. Cada uno corresponde a una API distinta. \\
+
+\end{longtable}
+
+Estas propiedades permiten una configuración flexible del componente, adaptándose a diferentes resoluciones, estilos visuales y requerimientos técnicos. En particular, el uso de
+
+\begin{figure}
+  \centering
+  \includegraphics[width=9cm, keepaspectratio]{img/loadDisplacementMap.png}
+  \caption{Función para generar imagen en escala de grises}
+  \label{fig:imagen-canvas}
+\end{figure}
+
+La función \texttt{loadDisplacementMap} tiene como objetivo generar una textura de desplazamiento en formato \texttt{THREE.DataTexture}, a partir de una imagen RGB codificada según el estándar \textit{Mapbox Terrain-RGB}, el cual representa la elevación del terreno mediante valores en los canales rojo, verde y azul. La figura~\ref{fig:imagen-canvas} muestra un diagrama de flujo del funcionamiento de esta parte del código.
+
+El proceso comienza con la creación de un objeto \texttt{Image}, al cual se le asigna la ruta del recurso (\texttt{url}) y se habilita el atributo \texttt{crossOrigin} con el valor \texttt{"Anonymous"} para evitar errores relacionados con el uso compartido de recursos entre distintos orígenes (CORS).
+
+Una vez que la imagen se ha cargado correctamente, se dibuja sobre un objeto \texttt{canvas} de HTML, invirtiendo previamente su eje vertical para corregir la orientación con respecto a WebGL. A continuación, se accede a los datos de píxeles mediante el contexto 2D del canvas y se extrae un array de valores RGBA.
+
+El núcleo del algoritmo reside en la iteración sobre los valores RGB de cada píxel. Utilizando la fórmula proporcionada por Mapbox, se calcula la elevación en metros:
+
+\[
+\text{elevación} = (R \cdot 256^2 + G \cdot 256 + B) \cdot 0.1 - 10{,}000
+\]
+
+Posteriormente, se normaliza este valor al rango $[0, 1]$ para adaptarlo al sistema de representación de Three.js, dividiendo por el intervalo total de 20\,000 metros (de $-10{,}000$ a $+10{,}000$). Durante la iteración, también se registran los valores mínimos y máximos de elevación con el fin de facilitar ajustes posteriores al renderizado o a la aplicación de sombreados basados en altura.
+
+Una vez procesados todos los píxeles, se construye una textura de tipo \texttt{THREE.DataTexture} utilizando los valores de elevación normalizados. Esta textura está compuesta por un único canal (\texttt{THREE.RedFormat}) y almacena valores en coma flotante (\texttt{THREE.FloatType}), lo que permite una representación precisa de las alturas en aplicaciones tridimensionales.
+
+Finalmente, se marca la textura como lista para su uso (\texttt{texture.needsUpdate = true}) y se resuelve la promesa con el objeto de textura generado. En caso de que ocurra un error durante la carga de la imagen, se rechaza la promesa de forma adecuada.
+
+\paragraph{Definiciones y conceptos clave}
+
+\begin{itemize}
+  \item \textbf{Canvas:} En el contexto de la programación web, un \emph{canvas} es un elemento HTML que proporciona un área rectangular donde se puede dibujar gráficos mediante \textit{scripting}, típicamente usando JavaScript. Este elemento permite renderizar imágenes, gráficos, animaciones y manipular píxeles de forma dinámica. En el código analizado, el canvas se utiliza para procesar y transformar la imagen descargada, facilitando la extracción de datos de píxeles necesarios para generar el mapa de desplazamiento.
+
+  \item \textbf{Promesa (\emph{Promise}):} Una promesa es un objeto en JavaScript que representa la eventual finalización (o fallo) de una operación asíncrona y su valor resultante. Las promesas permiten manejar tareas que tardan un tiempo en completarse, como la carga de imágenes o datos desde la red, evitando el bloqueo del hilo principal de ejecución. En este código, la función \texttt{loadDisplacementMap} devuelve una promesa que se resuelve con la textura cargada o se rechaza en caso de error.
+
+  \item \textbf{Propiedad \texttt{crossOrigin}:} Esta propiedad de un objeto \texttt{Image} en JavaScript especifica si la imagen debe ser cargada utilizando credenciales para solicitudes de origen cruzado (\emph{cross-origin}). El valor \texttt{"Anonymous"} indica que la imagen se solicita sin enviar \textit{cookies}, credenciales HTTP o certificados TLS, lo que es necesario para evitar problemas de seguridad relacionados con la política del mismo origen (\emph{Same-Origin Policy}). Esto permite que la imagen pueda ser utilizada en un \emph{canvas} para extraer datos de píxeles sin que el navegador bloquee esta operación debido a restricciones de seguridad. En resumen, definir \texttt{crossOrigin = "Anonymous"} es crucial para poder manipular imágenes procedentes de dominios diferentes al del sitio web sin incurrir en errores de seguridad o \emph{tainting} del canvas.
+\end{itemize}
+
+Una vez se ha cargado la imagen, se crea la malla y se le añade como textura el canva generado.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=9cm, keepaspectratio]{img/crearMalla.png}
+  \caption{Creación de la malla mediante una función flecha}
+  \label{fig:malla}
+\end{figure}
+
+El código presentado tiene como objetivo principal la construcción de una malla tridimensional que representa un terreno, utilizando mapas de desplazamiento y diferentes tipos de texturas procedentes de diversas fuentes, como Mapbox o OpenStreetMap. La figura~\ref{fig:malla} muestra un diagrama de flujo del funcionamiento de esta parte del código. A continuación se describe en detalle el funcionamiento del mismo.
+
+En primer lugar, se construye una URL para obtener un mapa de desplazamiento desde la API de Mapbox, empleando parámetros dinámicos como el nivel de zoom, las coordenadas de teselas (x, y) y un token de acceso. Esta URL se utiliza para cargar una textura que contiene información sobre la elevación del terreno en formato RGB.
+
+A continuación, se invoca la función \texttt{loadDisplacementMap} con dicha URL. Esta función devuelve una promesa que, cuando se resuelve correctamente, proporciona la textura con la información de desplazamiento. Si la carga falla, se captura el error y se informa mediante un mensaje en la consola.
+
+Cuando la promesa se resuelve, se procede a configurar las propiedades de repetición horizontal y vertical de la textura para permitir que esta se repita en ambas direcciones según los parámetros \texttt{horTexture} y \texttt{vertTexture} definidos en \texttt{data}. Esto es importante para evitar que la textura se estire o se muestre de forma incorrecta en la geometría final.
+
+Seguidamente, se definen dos variables fundamentales: \texttt{uniforms} y \texttt{groundMaterial}. La variable \texttt{uniforms} contendrá los valores y texturas que serán enviados a los shaders para la renderización, mientras que \texttt{groundMaterial} será el material shader aplicado a la malla.
+
+El código contempla dos ramas principales dependiendo del tipo de textura especificado en \texttt{data.textureType}:
+
+\begin{itemize}
+  \item Si el tipo es \texttt{"Coloured"}, se configuran los \textit{uniforms} con la textura de desplazamiento, la escala del bump mapping, y los valores mínimos y máximos de elevación obtenidos previamente. Posteriormente, se crea un \texttt{ShaderMaterial} que utiliza shaders personalizados (\texttt{vertexShader1} y \texttt{fragmentShader1}) para renderizar la malla con el efecto deseado.
+  
+  \item Para otros tipos de textura, el código selecciona una URL distinta según el tipo indicado (por ejemplo, \texttt{"Standard"}, \texttt{"Satellite"}, \texttt{"Hot"}, \texttt{"Cycle"} o \texttt{"Transport"}). Se carga la textura correspondiente mediante \texttt{THREE.TextureLoader}. Después, se configuran los \textit{uniforms} para incluir tanto la textura de desplazamiento como la textura cargada, y se crea un \texttt{ShaderMaterial} con shaders alternativos (\texttt{vertexShader2} y \texttt{fragmentShader2}).
+\end{itemize}
+
+El componente utiliza diferentes proveedores de mapas a través de sus APIs para renderizar imágenes de teselas (\textit{tiles}) en función del tipo de textura seleccionado. Cada API devuelve una imagen rasterizada (formato \texttt{.png}) correspondiente a una porción del mapa en coordenadas \texttt{x}, \texttt{y} y un nivel de \texttt{zoom} determinado.
+
+\begin{itemize}
+    \item \textbf{OpenStreetMap Estándar (Standard):} \\
+    \url{https://tile.openstreetmap.org/\{zoom\}/\{x\}/\{y\}.png} \\
+    Este servicio proporciona el mapa base clásico de OpenStreetMap. Es de uso libre bajo la licencia ODbL (\textit{Open Database License}), siempre que se acredite debidamente la fuente (\textit{© OpenStreetMap contributors}).
+
+    \item \textbf{Mapbox Satélite (Satellite):} \\
+    \url{https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/\{zoom\}/\{x\}/\{y\}?access_token=\{token\}} \\
+    Mapbox ofrece imágenes satelitales de alta resolución. Su uso requiere el registro en su página (\url{https://mapbox.com}) para obtener un token de acceso (API Key). El servicio tiene un plan gratuito limitado, por lo que es necesario controlar el número de solicitudes mensuales.
+
+    \item \textbf{Humanitarian OpenStreetMap Team (Hot):} \\
+    \url{https://tile-a.openstreetmap.fr/hot/\{zoom\}/\{x\}/\{y\}.png} \\
+    Esta variante cartográfica está pensada para entornos humanitarios. Se basa en datos de OSM con un estilo visual que resalta elementos clave como edificaciones, caminos, zonas de riesgo y refugios. Es de uso libre, pero conviene no abusar del servicio si no se tiene un acuerdo explícito.
+
+    \item \textbf{OpenCycleMap (Cycle):} \\
+    \url{https://\{subdomain\}.tile.thunderforest.com/cycle/\{zoom\}/\{x\}/\{y\}.png} \\
+    Proporcionado por \textit{Thunderforest}, está enfocado a ciclistas. Muestra carriles bici, desniveles, rutas populares y puntos de interés. Aunque su acceso es libre mediante sus dominios públicos, Thunderforest requiere el uso de una clave de API desde junio de 2020. Se puede obtener registrándose en su sitio web: \url{https://www.thunderforest.com/docs/apikeys/}.
+
+    \item \textbf{Thunderforest Transport:} \\
+    \url{https://\{subdomain\}.tile.thunderforest.com/transport/\{zoom\}/\{x\}/\{y\}.png} \\
+    También gestionado por Thunderforest, este estilo de mapa está centrado en el transporte público. Resalta líneas de autobús, tren, metro, estaciones y rutas frecuentes. Igual que el mapa ciclista, su uso requiere una clave de API gratuita o de pago.
+
+\end{itemize}
+
+A continuación, se muestra un resumen comparativo de las texturas:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Nombre} & \textbf{Proveedor} & \textbf{Requiere API Key} & \textbf{Tipo de mapa} \\
+\hline
+Standard & OpenStreetMap & No & Topográfico general \\
+Satellite & Mapbox & Sí & Imagen satelital real \\
+Hot & OSM France (HOT) & No & Estilo humanitario \\
+Cycle & Thunderforest & Sí & Enfocado en ciclismo \\
+Transport & Thunderforest & Sí & Transporte público \\
+\hline
+\end{tabular}
+\caption{Comparación de los estilos de mapa disponibles}
+\end{table}
+
+Cada uno de estos mapas ofrece una visión distinta del terreno y puede utilizarse en función del contexto de la aplicación: por ejemplo, el estilo \textit{Satellite} es ideal para aplicaciones inmersivas realistas, mientras que \textit{Cycle} o \textit{Transport} se prestan mejor a interfaces informativas.
+
+Una vez configurado el material, se genera la geometría del terreno mediante un plano (\texttt{PlaneGeometry}) con las dimensiones y subdivisiones indicadas en \texttt{data}. Esta geometría representa la superficie sobre la que se aplicará la textura y el desplazamiento.
+
+A partir de la geometría y el material definidos, se crea la malla 3D (\texttt{Mesh}) que representa el terreno. Se ajusta su rotación para que quede orientada correctamente (girada 90 grados sobre el eje X) y se posiciona en el espacio 3D.
+
+Finalmente, esta malla se añade a la entidad correspondiente en la escena 3D mediante el método \texttt{setObject3D}, permitiendo que forme parte del renderizado. El estado y los datos actuales se imprimen en la consola para facilitar el seguimiento y depuración del proceso.
+
+En caso de error durante la carga del mapa de desplazamiento, se captura el fallo y se muestra un mensaje en la consola para alertar al usuario o desarrollador.
+
+En resumen, este código permite cargar y preparar una textura de desplazamiento a partir de datos de elevación, aplicar distintos tipos de texturas visuales sobre una geometría plana subdividida, y finalmente crear una malla con shaders personalizados que simulan un terreno 3D realista en una escena WebGL gestionada con la biblioteca \texttt{three.js}.
+
+\textbf{WebGL} (Web Graphics Library) es una API de JavaScript para renderizar gráficos 3D y 2D interactivos dentro de cualquier navegador compatible, sin necesidad de instalar plugins adicionales. Se basa en \textit{OpenGL ES}, una versión reducida de OpenGL diseñada para sistemas embebidos como móviles o navegadores.
+
+WebGL permite que los desarrolladores creen visualizaciones gráficas complejas, simulaciones físicas, juegos 3D o aplicaciones de realidad virtual directamente en la web. Gracias a su integración con HTML5, WebGL es una tecnología fundamental para interfaces inmersivas y entornos tridimensionales. ¿Por qué es importante?
+
+\begin{itemize}
+    \item \textbf{Multiplataforma:} Funciona en navegadores modernos tanto en ordenadores como en dispositivos móviles.
+    \item \textbf{Basado en GPU:} Aprovecha el hardware gráfico para obtener un alto rendimiento en el renderizado.
+    \item \textbf{Estándar abierto:} Permite trabajar con bibliotecas como \texttt{Three.js}, \texttt{Babylon.js} o frameworks XR como \texttt{A-Frame}.
+    \item \textbf{Clave en visualización interactiva:} Especialmente útil en realidad virtual, videojuegos, visualización científica o mapas 3D.
+\end{itemize}
+
+\vspace{0.5cm}
+
+A continuación, se describe en lenguaje natural el funcionamiento aproximado de los shaders personalizados utilizados en el componente.
+
+\textbf{Vertex Shader 1: deformación del terreno por textura de relieve}
+
+\begin{verbatim}
+Entrada:
+- bumpTexture: imagen donde la intensidad del canal rojo representa 
+  la altura
+- bumpScale: escala de altura
+- position: posición original del vértice
+- normal: vector normal del vértice
+
+Pasos:
+1. Leer la altura desde la textura bumpTexture usando las 
+  coordenadas UV.
+2. Guardar la altura en vAmount (usada luego por el fragment shader).
+3. Desplazar el vértice en la dirección de su normal usando 
+  la altura y la escala.
+4. Calcular la posición final del vértice transformado para 
+  renderizarlo en pantalla.
+\end{verbatim}
+
+\textbf{Fragment Shader 1: colores según elevación}
+
+\begin{verbatim}
+Entrada:
+- vAmount: altura del vértice
+- minHeight, maxHeight: límites del rango de alturas
+
+Pasos:
+1. Calcular el rango total de alturas.
+2. Definir umbrales para distintos biomas: agua, arena, hierba, 
+  roca y nieve.
+3. Aplicar funciones smoothstep para generar transiciones suaves 
+  entre biomas.
+4. Asignar un color según el bioma en el que se encuentra la altura.
+5. Combinar los colores y establecer el color final del píxel.
+\end{verbatim}
+
+\subsubsection*{Vertex Shader 2: deformación y paso de coordenadas UV}
+
+\begin{verbatim}
+- Igual al vertexShader1, pero además guarda las coordenadas UV en 
+  vUv para que puedan usarse en el fragment shader.
+\end{verbatim}
+
+\subsubsection*{Fragment Shader 2: aplicación de textura RGB}
+
+\begin{verbatim}
+Entrada:
+- mapTexture: textura de colores reales (como una imagen satelital)
+- vUv: coordenadas UV del fragmento actual
+
+Pasos:
+1. Obtener el color del píxel desde la textura.
+2. Dibujar ese color en pantalla (gl_FragColor).
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
