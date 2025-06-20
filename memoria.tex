@@ -28,6 +28,9 @@
 \usepackage{url}
 %\usepackage[dvipdfm]{graphicx}
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usepackage[edges]{forest}
 \usepackage{float}  %% H para posicionar figuras
 \usepackage[nottoc, notlot, notlof, notindex]{tocbibind} %% Opciones de índice
 \usepackage{latexsym}  %% Logo LaTeX
@@ -1095,6 +1098,102 @@ Pasos:
 1. Obtener el color del píxel desde la textura.
 2. Dibujar ese color en pantalla (gl_FragColor).
 \end{verbatim}
+
+\section{Interfaz de usuario} 
+\label{sec:ui}
+
+Con el componente en pleno funcionamiento, ya solo quedaba crear una interfaz intuitiva y fácil de entender para que cualquiera supiera utilizar el componente. Primeramente, para facilitar la definición del \textit{token} se creó un formulario muy sencillo fuera de la escena HTML en el cual introducir la clave.
+
+Junto con el componente, se aprovecharon los componentes de A-Frame (geometrías, planos, etc) para crear unos botones sencillos que permitieran hacer o quitar zoom y cambiar de capas. Esto sería mucho más rápido accesible que escribirlo directamente al declarar el objeto en HTML. De esta forma, el árbol DOM cobraría una forma mucho más parecida a su estructura final.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+  \begin{forest}
+  for tree={
+    grow'=0,
+    draw,
+    rounded corners,
+    node options={align=center},
+    anchor=west,
+    parent anchor=east,
+    child anchor=west,
+    edge path={
+      \noexpand\path [draw, \forestoption{edge}]
+      (!u.parent anchor) -- (.child anchor)\forestoption{edge label};
+    },
+    l sep=30pt,
+    s sep=15pt,
+    font=\footnotesize,  % <-- fuente más legible
+  }
+  [body
+    [a-scene
+      [a-light]
+      [a-assets
+        [a-asset-item]
+      ]
+      [a-entity (map-terrain)
+        [a-entity (rightDesktopHolder)]
+        [a-entity (leftDesktopHolder)]
+      ]
+      [a-entity (rig)
+        [a-entity (head)]
+        [a-entity (rightHand)]
+        [a-entity (leftHand)]
+        [a-entity (cursor)]
+      ]
+    ]
+    [form (token-form)
+      [input]
+      [button]
+    ]
+  ]
+  \end{forest}
+}
+\caption{Árbol DOM simplificado del documento HTML}
+\end{figure}
+
+
+Para facilitar la interacción con los mapas de terreno en realidad virtual, se implementó un conjunto de botones y controles ubicados en los mandos (controladores) de las gafas de realidad extendida. Estos controles permiten modificar el zoom, cambiar la posición del mapa y alternar entre diferentes capas o texturas que pintan la malla del terreno.
+
+\subsection{Descripción de los controles implementados}
+
+Se crearon los siguientes elementos de interfaz:
+
+\begin{itemize}
+    \item \textbf{Botones de zoom:} Dos botones situados en el mando derecho para aumentar y disminuir el nivel de zoom del mapa.
+    \item \textbf{D-Pad direccional:} Un conjunto de cuatro botones (arriba, abajo, izquierda, derecha) también en el mando derecho que permiten mover la vista del mapa a los mosaicos inmediatamente superiores, inferiores, izquierdos o derechos, facilitando la navegación espacial.
+    \item \textbf{Botones de cambio de capa:} Dos botones en el mando izquierdo que permiten cambiar la capa o textura del mapa, alternando entre distintos estilos predefinidos, como \textit{Coloured}, \textit{Cycle}, \textit{Transport}, \textit{Standard}, \textit{Satellite} y \textit{Hot}.
+\end{itemize}
+
+\subsection{Lógica de interacción y código}
+
+La lógica para gestionar estos botones se implementó dentro del método \texttt{init} del componente A-Frame. A continuación se describen las funcionalidades principales:
+
+\begin{itemize}
+    \item \textbf{Detección de controladores:} Se buscaban las entidades correspondientes a los mandos derecho e izquierdo en la escena VR, buscando por ID o componentes específicos como \texttt{laser-controls} y \texttt{oculus-touch-controls}.
+    \item \textbf{Manejo de eventos:} Se definieron manejadores para cada acción: aumentar o disminuir zoom, mover la vista en una dirección, y cambiar la capa actual. Estos manejadores se asociaron a los botones mediante eventos de click.
+    \item \textbf{Actualización del mapa:} Cada vez que se realiza una acción, se actualizan los atributos del componente \texttt{babia-map} correspondientes a la posición (\texttt{x}, \texttt{y}), nivel de zoom (\texttt{zoom}) o textura (\texttt{textureType}), y se vuelve a construir la malla con la nueva configuración.
+    \item \textbf{Visibilidad de botones:} Se implementó una función para alternar la visibilidad de los botones en los mandos con el evento \texttt{gripdown}, permitiendo mostrar u ocultar la interfaz en VR.
+    \item \textbf{Configuración opcional:} La presencia de estos controles en los mandos se controla mediante una propiedad booleana del componente llamada \texttt{handsUI}. Cuando está activa, los botones aparecen pegados a las manos en VR; de lo contrario, pueden usarse controles de escritorio u otra interfaz.
+\end{itemize}
+
+\medskip
+
+\begin{figure}
+  \centering
+  \includegraphics[width=9cm, keepaspectratio]{img/buttons.png}
+  \caption{Detección de manos y asignación de eventos a botones}
+  \label{fig:botones}
+\end{figure}
+
+Este diseño permite una interacción intuitiva y rápida con el mapa, adaptándose al entorno de realidad extendida y aprovechando los mandos disponibles para controlar cómodamente el zoom, la posición y la apariencia del terreno.
+
+\section{Recolección de datos} 
+\label{sec:coordenadas}
+
+Como muestra del potencial que tiene este proyecto, se creó también una funcionalidad extra que permite guardar las coordenadas reales del punto del mapa al que se esté apuntando. La idea era conseguir apuntar a cualquier zona del mapa, capturar los valores y hacer el cálculo necesario para obtener la latitud y longitud reales del punto señalado.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
