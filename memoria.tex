@@ -1194,6 +1194,135 @@ Este diseño permite una interacción intuitiva y rápida con el mapa, adaptánd
 
 Como muestra del potencial que tiene este proyecto, se creó también una funcionalidad extra que permite guardar las coordenadas reales del punto del mapa al que se esté apuntando. La idea era conseguir apuntar a cualquier zona del mapa, capturar los valores y hacer el cálculo necesario para obtener la latitud y longitud reales del punto señalado.
 
+\subsection{Captura de coordenadas geográficas mediante interacción en VR}
+
+Una de las funcionalidades más destacadas implementadas en el componente \texttt{babia-map} del sistema \texttt{babiaxr} consiste en la posibilidad de capturar coordenadas geográficas reales (latitud y longitud) a partir de una interacción directa con el mapa tridimensional mediante los mandos de realidad virtual.
+
+Esta funcionalidad permite al usuario apuntar con el controlador de la mano izquierda a cualquier punto del terreno, y al pulsar el botón frontal, se calcula la localización geográfica del punto señalado. Esta información se almacena en una propiedad interna denominada \texttt{coordinates}, de tipo \texttt{vec2}, que representa un par \texttt{(latitud, longitud)}. Este mecanismo resulta especialmente útil para marcar ubicaciones de interés, trazar rutas o generar anotaciones espaciales en entornos inmersivos.
+
+\subsubsection*{1. Detección de intersección y coordenadas locales}
+
+El proceso comienza al detectar un evento de clic sobre el controlador izquierdo. Se comprueba si dicho clic ha intersectado con el objeto correspondiente al mapa. En caso afirmativo, se obtiene el punto de intersección en coordenadas del mundo (\texttt{world coordinates}), el cual se convierte al sistema de coordenadas locales del mapa mediante la función \texttt{worldToLocal}. Este punto tridimensional se proyecta en el plano horizontal del mapa extrayendo las componentes $x$ y $z$.
+
+\subsubsection*{2. Normalización e interpolación de teselas}
+
+Las coordenadas locales obtenidas se normalizan al intervalo $[0,1]$ mediante la fórmula:
+
+\[
+u = \frac{x + \text{width}/2}{\text{width}}, \qquad v = 1 - \frac{z + \text{height}/2}{\text{height}}
+\]
+
+donde \texttt{width} y \texttt{height} son las dimensiones físicas del mapa en el entorno 3D.
+
+Estas coordenadas normalizadas $(u, v)$ se usan para calcular la posición fraccionaria dentro de la tesela global, sumando los desplazamientos \texttt{x} e \texttt{y} actuales del componente:
+
+\[
+\text{globalTileX} = \texttt{tileX} + u, \qquad \text{globalTileY} = \texttt{tileY} + v
+\]
+
+\subsubsection*{3. Conversión a latitud y longitud}
+
+A continuación, se convierte esta posición fraccionaria dentro del sistema de teselas al sistema de coordenadas geográficas, usando el estándar Web Mercator. Sea $n = 2^\text{zoom}$ el número de teselas en el nivel de zoom actual. La longitud se obtiene directamente mediante una interpolación lineal:
+
+\[
+\lambda = \frac{\text{globalTileX}}{n} \cdot 360^\circ - 180^\circ
+\]
+
+La latitud requiere una transformación más compleja, dada por la inversa de la proyección de Mercator:
+
+\[
+\phi = \arctan\left(\sinh\left(\pi \left(1 - \frac{2 \cdot \text{globalTileY}}{n}\right)\right)\right) \cdot \frac{180^\circ}{\pi}
+\]
+
+donde $\lambda$ representa la longitud y $\phi$ la latitud, ambos expresados en grados decimales.
+
+\subsubsection*{4. Visualización y retroalimentación}
+
+Una vez obtenidas las coordenadas geográficas, se actualiza la propiedad \texttt{coordinates} del componente con los valores calculados. Para proporcionar una representación visual, se crea (o actualiza) un marcador tridimensional, representado como una esfera roja, que se coloca sobre el punto señalado por el usuario, con una leve elevación para adaptarse a la textura de relieve (\texttt{bumpMap}) del terreno.
+
+\subsubsection*{5. Actualización de interfaz textual}
+
+Además del marcador visual, se actualizan uno o varios bloques de texto (\texttt{coordinates-text}) en la escena, los cuales muestran la latitud y longitud truncadas a dos cifras decimales. Si el sistema detecta que se está utilizando la interfaz háptica (activada mediante la propiedad \texttt{handsUi}), se actualiza también un bloque de texto en el propio controlador izquierdo, proporcionando así una retroalimentación inmediata y contextual al usuario.
+
+La Figura~\ref{fig:flujo-coordenadas} muestra el diagrama de flujo del proceso completo de captura de coordenadas desde la interacción con el mapa hasta su representación en la interfaz y almacenamiento interno del componente.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm, keepaspectratio]{img/flujo-coordenadas.png}
+    \caption{Diagrama de flujo del sistema de captura de coordenadas en \texttt{babia-map}.}
+    \label{fig:flujo-coordenadas}
+\end{figure}
+
+\section{Botones dinámicos} 
+\label{sec:botones-dinamicos}
+
+Para dejar un componente funcional por cuenta propia, se desarrolló la funcionalidad necesaria para que los botones agregados anteriormente al código HTML ya no tuvieran que añadirse manualmente. De esta forma, con una serie de automatizaciones y nuevas propiedades para personalizar los botones en una configuración más amigable con el usuario, la interfaz se volvió dinámica.
+
+Se crearon las siguientes propiedades con sus respectivos datos de serie:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Propiedad} & \textbf{Descripción} \\
+\hline
+\texttt{entityRightButton} & Define la posición y rotación de la entidad contenedora de los botones del mando derecho. \\
+\hline
+\texttt{entityLeftButton} & Define la posición y rotación de la entidad contenedora de los botones del mando izquierdo. \\
+\hline
+\texttt{rightButtons} & Lista de botones interactivos situados en el mando derecho, como "Zoom In" y "Zoom Out", con sus respectivas propiedades visuales (color, tamaño, posición, texto, clase). \\
+\hline
+\texttt{crossEntity} & Define la posición y rotación del grupo de botones direccionales en forma de cruz (D-pad). \\
+\hline
+\texttt{crossButtons} & Contiene los botones del D-pad: arriba, abajo, izquierda y derecha. Cada uno incluye propiedades como color, posición, etiqueta y clase. \\
+\hline
+\texttt{leftButtons} & Lista de botones del mando izquierdo, como "Next Layer" y "Previous Layer", que permiten cambiar capas en el mapa. \\
+\hline
+\texttt{coordinatesText} & Configuración del texto que muestra las coordenadas capturadas, incluyendo su contenido, color, posición y tamaño. \\
+\hline
+\end{tabular}
+\caption{Descripción de propiedades visuales y funcionales del componente \texttt{babia-map}.}
+\label{tab:babia-properties}
+\end{table}
+
+
+El código relacionado construye una interfaz de usuario en A-Frame para realidad virtual, destinada a proporcionar botones interactivos organizados en torno a las manos del usuario y al espacio frente a él. Se explican a continuación las secciones principales del mismo:
+
+\begin{itemize}
+  \item \textbf{Inicialización de variables:} Se accede a los datos del componente A-Frame mediante \texttt{this.data} y a la entidad actual con \texttt{this.el}. A continuación, se define una constante \texttt{BABIA\_MAP\_PRESET\_UI}, que contiene una configuración alternativa predeterminada para la interfaz cuando se utilizan mandos de realidad virtual.
+
+  \item \textbf{Estructura de datos:} Las propiedades \texttt{rightButtons}, \texttt{leftButtons}, \texttt{crossEntity}, \texttt{crossButtons} y \texttt{coordinatesText} definen botones y elementos de texto con atributos como tamaño, posición, rotación, etiqueta, color, y clase CSS asociada.
+
+  \item \textbf{Búsqueda de mandos:} La función \texttt{findHandEntity(handedness)} busca en el documento las entidades correspondientes a las manos izquierda o derecha. Intenta encontrarlas primero por su ID, luego por el componente \texttt{laser-controls} y finalmente por \texttt{oculus-touch-controls}. Si no se encuentra ninguna, retorna \texttt{null}.
+
+  \item \textbf{Lectura de propiedades desde los datos del componente:} Se parsean las propiedades JSON definidas por el usuario desde \texttt{data.*} usando \texttt{JSON.parse}, almacenándolas en variables locales como \texttt{crossButtons}, \texttt{rightButtons}, etc.
+
+  \item \textbf{Creación de contenedores:} Se crean dos entidades \texttt{a-entity} denominadas \texttt{leftDesktopHolder} y \texttt{rightDesktopHolder}, que actúan como contenedores para los botones correspondientes al menú de escritorio. A estas entidades se les asignan posiciones y rotaciones extraídas de \texttt{entityLeftButton} y \texttt{entityRightButton}.
+
+  \item \textbf{Generación de botones:} La función \texttt{addButtons} toma como parámetros los contenedores de interfaz (ya sea las manos o los menús de escritorio), junto con las configuraciones de botones. En esta función:
+  \begin{itemize}
+    \item Se generan los botones del menú izquierdo y derecho, usando la función \texttt{createButton}.
+    \item Se crea una entidad intermedia llamada \texttt{cross}, que agrupa botones direccionales tipo \texttt{d-pad}.
+    \item Se inserta un texto que representa la coordenada actual, tomando los atributos desde \texttt{coordinatesText}.
+  \end{itemize}
+
+  \item \textbf{Creación de botones individuales:} La función \texttt{createButton} crea una entidad \texttt{a-text} con atributos como geometría (en este caso, un plano), color del material, valor de texto, tamaño, posición, rotación y clases CSS. Estos botones son interactivos y están preparados para detectar colisiones, tal como indican las clases \texttt{collidable} e \texttt{interactive-button}.
+  
+  \item \textbf{Interfaz en mandos VR:} Si el parámetro \texttt{data.handsUi} está activo, se llama a \texttt{addButtons} usando las entidades de mano izquierda y derecha detectadas previamente, y se construyen los mismos menús descritos anteriormente pero anclados a los mandos del usuario.
+\end{itemize}
+
+Este sistema permite construir una interfaz versátil tanto para escritorio como para entornos inmersivos, adaptando su presentación según la detección de mandos y configuraciones predefinidas.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=7cm, keepaspectratio]{img/flujo-dinamico.png}
+    \caption{Diagrama de flujo de la creación automática de botones.}
+    \label{fig:flujo-dinamico}
+\end{figure}
+
+En la Figura~\ref{fig:flujo-dinamico} se muestra un diagrama de flujo que resume la lógica detrás de la creación de los botones.
+
+Una vez conseguido este Hito y habiendo sido valorado por el tutor, se dio por concluida la fase de desarrollo.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1204,10 +1333,47 @@ Como muestra del potencial que tiene este proyecto, se creó también una funcio
 \chapter{Experimentos y validación}
 \label{chap:experimentos}
 
-Este capítulo se introdujo como requisito en 2019. 
-Describe los experimentos y casos de test que tuviste que implementar para validar tus resultados. 
-Incluye también los resultados de validación que permiten afirmar que tus resultados son correctos. 
+% Este capítulo se introdujo como requisito en 2019. 
+% Describe los experimentos y casos de test que tuviste que implementar para validar tus resultados. 
+% Incluye también los resultados de validación que permiten afirmar que tus resultados son correctos. 
 
+Para hacer pruebas, era necesario utilizar las gafas de realidad extendida. Existen varias formas para poder ver la consola de la herramienta para desarrolladores del navegador en las gafas, pero ninguna de ellas consiguió funcionarme. Es por eso motivo que cada vez que quería saber el valor de alguna variable, debía escribirlo en un \texttt{a-text} auxiliar y visualizarlo en la escena.
+
+Al principio comencé simplemente viendo los cambios visualmente mediante el navegador del ordenador. Si ocurría algún error, podía visualizarlo en la consola de Firefox. Un ejemplo de esto se puede ver en la Figura~\ref{fig:herramienta-desarrolladores}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/herramienta-desarrolladores.png}
+    \caption{Herramienta para desarrolladores de Firefox.}
+    \label{fig:herramienta-desarrolladores}
+\end{figure}
+
+Muchas veces, los objetos no se encontraban en la ubicación esperada. Para localizarlos en la escena, ha sido de mucha ayuda la utilización de la herramienta de desarrollo de A-Frame. En la Figura~\ref{fig:herramienta-aframe} es posible ver un ejemplo visual de este recurso.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/herramienta-aframe.png}
+    \caption{Herramienta para desarrolladores de A-Frame.}
+    \label{fig:herramienta-aframe}
+\end{figure}
+
+Cuando la creación del componente ya estaba asegurada y tan solo quedaba crear las diferentes funciones de los botones, fue necesario que no solo funcionara en ordenador, sino también en el entorno de BabiaXR. Al utilizar las gafas de realidad virtual, para que cualquier cambio que hiciera en el código también pudiera detectarlo en el momento, era necesario que el ordenador y las gafas estuvieran en la misma red Wi-Fi. De esta forma, al lanzar un servidor local, tan solo debía conectarme a la misma dirección IP en el navegador. Esta IP, como se puede ver en la Figura~\ref{fig:iplocal}, era otorgada a la hora de ejecutar el código.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/iplocal.png}
+    \caption{Salida en la terminal de Ubuntu con la dirección IP en la que se aloja el servidor. La dirección otorgada es 192.168.1.225:8080.}
+    \label{fig:iplocal}
+\end{figure}
+
+Por último, para saber si realmente funcionaba el cálculo de las coordenadas, simplemente se comparó el resultado de señalar a las pirámides de Giza con las coordenadas de Google Maps (29.977, 31.132). El resultado obtenido mediante el componente de BabiaXR fue de 29.97, 31.13, tal y como se puede ver en la captura~\ref{fig:giza}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/giza.png}
+    \caption{Coordenadas de las pirámides de Giza en \texttt{babia-map}.}
+    \label{fig:giza}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1218,10 +1384,35 @@ Incluye también los resultados de validación que permiten afirmar que tus resu
 \chapter{Resultados}
 \label{chap:resultados}
 
-En este capítulo se incluyen los resultados de tu trabajo fin de grado.
+% En este capítulo se incluyen los resultados de tu trabajo fin de grado.
 
-Si es una herramienta de análisis lo que has realizado, aquí puedes poner ejemplos de haberla utilizado para que se vea su utilidad.
+% Si es una herramienta de análisis lo que has realizado, aquí puedes poner ejemplos de haberla utilizado para que se vea su utilidad.
 
+Al finalizar el desarrollo del componente \texttt{babia-map}, se han conseguido implementar y validar con éxito las siguientes funcionalidades:
+
+\begin{itemize}
+    \item Generación de una malla 3D en tiempo real a partir de datos de elevación procedentes de la API \textit{Mapbox Terrain-RGB}, integrados en \texttt{Three.js}.
+    \item Aplicación de texturas geográficas sobre la malla mediante imágenes obtenidas de MapBox y OpenStreetMap, con la posibilidad de cambiar de capa (ej. satélite, relieve, cartográfica).
+    \item Sistema de botones dinámicos que permite interactuar con el mapa en XR para hacer zoom, moverse en distintas direcciones (arriba, abajo, izquierda, derecha), y alternar entre capas.
+    \item Detección precisa de coordenadas geográficas (latitud y longitud) al señalar cualquier punto del terreno con un puntero en realidad extendida.
+    \item Compatibilidad con interfaces de escritorio y con dispositivos de realidad extendida como Meta Quest 3, mediante A-Frame y controles adaptativos.
+\end{itemize}
+
+\medskip
+
+Se ha creado además una \textbf{página web del proyecto}, publicada mediante GitLab Pages, donde cualquier usuario puede consultar la información técnica, ver una demostración o acceder directamente al visualizador. Esta web incluye también un \textbf{vídeo en YouTube} que muestra el funcionamiento completo del sistema en un entorno de realidad virtual.
+
+\medskip
+
+Durante las pruebas realizadas se ha validado que el sistema funciona de forma fluida en entornos XR y que responde correctamente a las interacciones del usuario. Se han llevado a cabo pruebas tanto en modo escritorio como en realidad virtual, verificando que los botones responden de forma intuitiva y que las capas se actualizan correctamente sin interrupciones perceptibles.
+
+\medskip
+
+Como limitación detectada, cabe señalar que la resolución del terreno y la carga de texturas depende directamente de la velocidad de conexión a Internet y del tamaño de teselas descargadas. Además, al tratarse de un prototipo en fase inicial, no se han implementado aún mecanismos avanzados de cacheo o carga progresiva.
+
+\medskip
+
+Aun así, el componente \texttt{babia-map} representa una base sólida para el desarrollo de sistemas de visualización cartográfica inmersiva en XR, permitiendo una experiencia interactiva, educativa y potencialmente útil en entornos de simulación, formación o turismo virtual.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1436,5 +1627,12 @@ Si la propiedad \texttt{handsUi} está activada, los grupos de botones se adjunt
 % y verás que lo puedes hacer de manera sencilla.
 % Más información: 
 % http://texblog.org/2014/04/22/using-google-scholar-to-download-bibtex-citations/
+
+\noindent\textbf{Enlaces relevantes:}
+\begin{itemize}
+    \item Sitio web del proyecto: \url{https://myweb-1570c5.gitlab.io/}
+    \item Repositorio del código fuente: \url{https://gitlab.com/babiaxr/aframe-babia-components}
+    \item Vídeo de demostración: \url{https://youtu.be/1KY6OlpgMOQ}
+\end{itemize}
 
 \end{document}
