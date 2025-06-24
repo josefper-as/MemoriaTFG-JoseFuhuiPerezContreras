@@ -25,8 +25,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel} % Comenta esta línea si tu memoria es en inglés
-\usepackage[hyphens]{url}
-\usepackage[colorlinks=true, breaklinks=true]{hyperref}
+\usepackage{url}
 %\usepackage[dvipdfm]{graphicx}
 \usepackage{graphicx}
 \usepackage{tikz}
@@ -276,11 +275,11 @@ Además del reto técnico, el proyecto plantea una reflexión sobre el papel act
 
 Los mapas han sido históricamente una herramienta fundamental para representar el territorio y facilitar la navegación, la planificación y la toma de decisiones. En la actualidad, su importancia ha ido en aumento gracias a los avances tecnológicos que permiten su digitalización, interacción y visualización tridimensional en tiempo real.
 
-En el ámbito de la Ingeniería Telemática, los mapas no solo se utilizan como elementos visuales, sino también como interfaces que permiten acceder, consultar y analizar grandes volúmenes de datos \textit{georreferenciados}. Esta relación directa con las bases de datos espaciales establece un nexo claro con asignaturas cursadas durante el grado, como \textit{ Laboratorio de Bases de Datos}, donde se han trabajado conceptos fundamentales como la estructuración eficiente de datos, su recuperación y la optimización de consultas.
+En el ámbito de la Ingeniería Telemática, los mapas no solo se utilizan como elementos visuales, sino también como interfaces que permiten acceder, consultar y analizar grandes volúmenes de datos georreferenciados. Esta relación directa con las bases de datos espaciales establece un nexo claro con asignaturas cursadas durante el grado, como \textit{ Laboratorio de Bases de Datos}, donde se han trabajado conceptos fundamentales como la estructuración eficiente de datos, su recuperación y la optimización de consultas.
 
 El uso de mapas tridimensionales y tecnologías asociadas como \textit{WebXR} abre un abanico de posibilidades en diferentes áreas. Desde la educación inmersiva y la visualización científica, hasta la planificación urbana, el turismo o la simulación de entornos complejos. Al permitir representar información en contextos espaciales, los mapas se convierten en una poderosa herramienta de comunicación y análisis.
 
-Este proyecto surge del interés por combinar estas capacidades con tecnologías modernas de visualización en entornos web, apoyado además por el hecho de que \textit{BabiaXR}, la herramienta empleada, ha sido desarrollada por docentes e investigadores de la Universidad Rey Juan Carlos. Este hecho no solo facilita el acceso al entorno de trabajo, sino que también refuerza el valor académico del proyecto al fomentar la colaboración con desarrollos propios del entorno universitario.
+Este proyecto surge del interés por combinar estas capacidades con tecnologías modernas de visualización en entornos web, apoyado además por el hecho de que \textit{Babia XR}, la herramienta empleada, ha sido desarrollada por docentes e investigadores de la Universidad Rey Juan Carlos. Este hecho no solo facilita el acceso al entorno de trabajo, sino que también refuerza el valor académico del proyecto al fomentar la colaboración con desarrollos propios del entorno universitario.
 
 
 % \subsection{Estilo}
@@ -444,9 +443,9 @@ La realización de este Trabajo de Fin de Grado se ha desarrollado a lo largo de
 \begin{itemize}
   \item \textbf{Septiembre de 2024:} Primer contacto con el tutor del TFG, David Moreno Lumbreras, para explorar posibles temáticas del trabajo.
 
-  \item \textbf{Octubre de 2024:} Reunión con el tutor para concretar la propuesta definitiva, centrada en el desarrollo de un componente para mapas en entornos de realidad virtual, en el marco de la plataforma BabiaXR.
+  \item \textbf{Octubre de 2024:} Reunión con el tutor para concretar la propuesta definitiva, centrada en el desarrollo de un componente para mapas en entornos de realidad virtual, en el marco de la plataforma Babia XR.
 
-  \item \textbf{Octubre - diciembre de 2024:} Fase de documentación y aprendizaje. Se estudian tecnologías clave como \textit{A-Frame} y BabiaXR, y se experimenta con componentes ya existentes dentro de esta plataforma. Esta etapa se desarrolló mayoritariamente durante los fines de semana debido a la carga lectiva y laboral (prácticas curriculares y clases los martes y miércoles).
+  \item \textbf{Octubre - diciembre de 2024:} Fase de documentación y aprendizaje. Se estudian tecnologías clave como \textit{A-Frame} y Babia XR, y se experimenta con componentes ya existentes dentro de esta plataforma. Esta etapa se desarrolló mayoritariamente durante los fines de semana debido a la carga lectiva y laboral (prácticas curriculares y clases los martes y miércoles).
 
   \item \textbf{Diciembre de 2024:} La universidad facilita el acceso a unas gafas de realidad virtual, permitiendo comenzar el desarrollo y pruebas en entorno real.
 
@@ -524,31 +523,31 @@ A continuación, se muestra un diagrama de Gantt del proceso completo:
 \section{Babia-XR}
 \label{sec:babiaxr}
 
-\textit{BabiaXR} es una plataforma de desarrollo para entornos inmersivos y experiencias interactivas en realidad virtual (VR), realidad aumentada (AR) y realidad mixta (MR). Se trata de una iniciativa impulsada por investigadores y docentes de la Universidad Rey Juan Carlos (URJC), lo que refuerza su vinculación con el ámbito académico y su aplicación en proyectos de investigación y desarrollo tecnológico.
+\textit{Babia XR} es una plataforma de desarrollo para entornos inmersivos y experiencias interactivas en realidad virtual (VR), realidad aumentada (AR) y realidad mixta (MR). Se trata de una iniciativa impulsada por investigadores y docentes de la Universidad Rey Juan Carlos (URJC), lo que refuerza su vinculación con el ámbito académico y su aplicación en proyectos de investigación y desarrollo tecnológico.
 
-El objetivo principal de BabiaXR es facilitar la creación de aplicaciones inmersivas mediante tecnologías web abiertas, como \textit{WebXR}, \textit{A-Frame} y \textit{Three.js}. Estas tecnologías permiten ejecutar contenidos tridimensionales directamente en navegadores compatibles, sin necesidad de instalar software adicional. Esto representa una ventaja significativa en términos de accesibilidad, portabilidad y compatibilidad con múltiples dispositivos, incluyendo gafas de realidad virtual como las Meta Quest.
+El objetivo principal de Babia XR es facilitar la creación de aplicaciones inmersivas mediante tecnologías web abiertas, como \textit{WebXR}, \textit{A-Frame} y \textit{Three.js}. Estas tecnologías permiten ejecutar contenidos tridimensionales directamente en navegadores compatibles, sin necesidad de instalar software adicional. Esto representa una ventaja significativa en términos de accesibilidad, portabilidad y compatibilidad con múltiples dispositivos, incluyendo gafas de realidad virtual como las Meta Quest.
 
-En el contexto de este trabajo, BabiaXR se utiliza como entorno base para la integración del componente de visualización de mapas tridimensionales. La elección de esta plataforma responde a dos motivos principales:
+En el contexto de este trabajo, Babia XR se utiliza como entorno base para la integración del componente de visualización de mapas tridimensionales. La elección de esta plataforma responde a dos motivos principales:
 
 \begin{enumerate}
   \item \textbf{Necesidad técnica:} proporciona la infraestructura necesaria para desplegar escenas VR complejas, integrando capas de información geoespacial, controles de navegación y representaciones 3D sobre terrenos reales.
   \item \textbf{Vinculación institucional:} al tratarse de una herramienta desarrollada dentro de la propia universidad, su uso refuerza la colaboración entre estudiantes y líneas de investigación del centro, además de facilitar el acceso a soporte técnico y documentación específica.
 \end{enumerate}
 
-BabiaXR se apoya en un conjunto de tecnologías modernas y bien consolidadas:
+Babia XR se apoya en un conjunto de tecnologías modernas y bien consolidadas:
 \begin{itemize}
-  \item \textit{A-Frame}: \textit{framework} basado en HTML para crear experiencias VR accesibles desde navegadores.
+  \item \textit{A-Frame}: framework basado en HTML para crear experiencias VR accesibles desde navegadores.
   \item \textit{Three.js}: biblioteca JavaScript que permite renderizar gráficos 3D en WebGL con gran flexibilidad.
   \item \textit{WebXR}: estándar para ejecutar experiencias inmersivas directamente en el navegador, compatible con múltiples dispositivos.
 \end{itemize}
 
-Gracias a esta combinación, BabiaXR permite un desarrollo ágil y modular, facilitando la incorporación de componentes personalizados, como el sistema de teselas con desplazamiento que se ha implementado en este proyecto.
+Gracias a esta combinación, Babia XR permite un desarrollo ágil y modular, facilitando la incorporación de componentes personalizados, como el sistema de teselas con desplazamiento que se ha implementado en este proyecto.
 
 
 \subsection{A-Frame}
 \label{subsec:aframe}
 
-\textit{A-Frame} es un \textit{framework} de código abierto desarrollado inicialmente por Mozilla para facilitar la creación de experiencias de realidad virtual usando HTML. Su diseño declarativo permite definir escenas tridimensionales mediante etiquetas similares a las del propio lenguaje HTML, lo cual lo hace accesible incluso para desarrolladores con conocimientos limitados de gráficos 3D o WebGL.
+\textit{A-Frame} es un framework de código abierto desarrollado inicialmente por Mozilla para facilitar la creación de experiencias de realidad virtual usando HTML. Su diseño declarativo permite definir escenas tridimensionales mediante etiquetas similares a las del propio lenguaje HTML, lo cual lo hace accesible incluso para desarrolladores con conocimientos limitados de gráficos 3D o WebGL.
 
 \textit{A-Frame} está construido sobre \texttt{Three.js}, lo que le permite mantener una gran potencia gráfica bajo una capa de abstracción más sencilla. Además, es extensible mediante componentes personalizados, lo que permite adaptar el comportamiento de los elementos de la escena a las necesidades específicas del proyecto.
 
@@ -567,14 +566,14 @@ En este trabajo, \textit{A-Frame} actúa como base para representar los elemento
 
 Three.js es una biblioteca JavaScript muy utilizada para renderizar gráficos tridimensionales en el navegador utilizando \texttt{WebGL}. Proporciona una interfaz de alto nivel que simplifica el uso de funcionalidades avanzadas de gráficos 3D, como luces dinámicas, materiales complejos, sombras en tiempo real y animaciones.
 
-En el contexto de BabiaXR, Three.js es el motor gráfico que subyace bajo \textit{A-Frame}. Aunque normalmente no se accede directamente a su API cuando se utiliza \textit{A-Frame}, su presencia es fundamental para permitir el renderizado eficiente de los objetos en la escena.
+En el contexto de Babia XR, Three.js es el motor gráfico que subyace bajo \textit{A-Frame}. Aunque normalmente no se accede directamente a su API cuando se utiliza \textit{A-Frame}, su presencia es fundamental para permitir el renderizado eficiente de los objetos en la escena.
 
 Algunos componentes personalizados del proyecto, especialmente los relacionados con el desplazamiento de texturas y la carga dinámica de teselas, se benefician de las capacidades avanzadas de Three.js, ya que permiten modificar directamente atributos de materiales y geometrías a bajo nivel.
 
 \subsubsection*{WebGL}
 \label{subsec:webgl}
 
-WebGL (Web Graphics Library) es una API de JavaScript para renderizar gráficos 2D y 3D dentro de cualquier navegador web compatible sin necesidad de \textit{plugins}. Está basada en OpenGL ES 2.0 y permite acceder a la aceleración gráfica del hardware de forma segura. En el contexto del proyecto, WebGL es la tecnología subyacente sobre la que se construyen bibliotecas como Three.js y A-Frame, lo que permite representar escenas tridimensionales complejas directamente en el navegador.
+WebGL (Web Graphics Library) es una API de JavaScript para renderizar gráficos 2D y 3D dentro de cualquier navegador web compatible sin necesidad de plugins. Está basada en OpenGL ES 2.0 y permite acceder a la aceleración gráfica del hardware de forma segura. En el contexto del proyecto, WebGL es la tecnología subyacente sobre la que se construyen bibliotecas como Three.js y A-Frame, lo que permite representar escenas tridimensionales complejas directamente en el navegador.
 
 
 \subsection{WebXR}
@@ -584,7 +583,7 @@ WebXR es un estándar del W3C que proporciona una interfaz unificada para accede
 
 A diferencia de sus predecesores (como WebVR), WebXR está diseñado para soportar tanto realidad virtual como aumentada desde una misma API, y su adopción por parte de los principales navegadores modernos garantiza su viabilidad a largo plazo.
 
-BabiaXR utiliza WebXR para habilitar la ejecución de escenas inmersivas en dispositivos como las Meta Quest, permitiendo al usuario entrar en la experiencia VR directamente desde el navegador. Esta capacidad resulta especialmente útil en entornos educativos y de investigación, donde la simplicidad de despliegue es una prioridad.
+Babia XR utiliza WebXR para habilitar la ejecución de escenas inmersivas en dispositivos como las Meta Quest, permitiendo al usuario entrar en la experiencia VR directamente desde el navegador. Esta capacidad resulta especialmente útil en entornos educativos y de investigación, donde la simplicidad de despliegue es una prioridad.
 
 
 \section{HTML}
@@ -617,7 +616,7 @@ JavaScript es el lenguaje de programación principal del entorno web, y se utili
 \subsection{Node.js y herramientas asociadas}
 \label{sec:nodejs}
 
-Node.js es un entorno de ejecución para JavaScript fuera del navegador. Aunque el componente se ejecuta en el cliente, Node.js se utiliza durante el desarrollo para gestionar dependencias, ejecutar \textit{scripts} y automatizar tareas. Para ello, se hace uso de \texttt{npm} (Node Package Manager), el gestor de paquetes de Node.js, y de \texttt{nvm} (Node Version Manager), que facilita la instalación y gestión de múltiples versiones de Node.js en un mismo sistema. Estas herramientas son necesarias para compilar, organizar y desplegar el componente de manera eficiente.
+Node.js es un entorno de ejecución para JavaScript fuera del navegador. Aunque el componente se ejecuta en el cliente, Node.js se utiliza durante el desarrollo para gestionar dependencias, ejecutar scripts y automatizar tareas. Para ello, se hace uso de \texttt{npm} (Node Package Manager), el gestor de paquetes de Node.js, y de \texttt{nvm} (Node Version Manager), que facilita la instalación y gestión de múltiples versiones de Node.js en un mismo sistema. Estas herramientas son necesarias para compilar, organizar y desplegar el componente de manera eficiente.
 
 
 
@@ -733,11 +732,34 @@ Desde octubre de 2024 hasta enero de 2025, dediqué una fase inicial a experimen
 
 En diciembre de 2024 recibí unas gafas Meta Quest 3, lo que marcó un punto de inflexión en el proyecto: a partir de entonces pude visualizar los resultados del desarrollo directamente en un entorno de realidad virtual, lo cual facilitó significativamente la detección de errores de uso, escalado, perspectiva o rendimiento.
 
-Uno de los primeros pasos técnicos fue realizar una revisión de componentes similares ya disponibles. Entre ellos, encontré \texttt{aterrain}, un componente para generar terreno 3D en A-Frame basado en mapas de altura (\textit{heightmaps}). Su repositorio de GitHub se encuentra referenciado en \cite{joserper-as:_aterrain_component}. Sin embargo, este componente estaba obsoleto, sin mantenimiento activo desde hacía varios años, y resultaba difícil de modificar o ampliar. Esta limitación me llevó a desarrollar una solución propia desde cero, basada en un enfoque más flexible y adaptado a los requerimientos actuales de WebXR.
+Uno de los primeros pasos técnicos fue realizar una revisión de componentes similares ya disponibles. Entre ellos, encontré \texttt{aterrain}, un componente para generar terreno 3D en A-Frame basado en mapas de altura (\textit{heightmaps}). Sin embargo, este componente estaba obsoleto, sin mantenimiento activo desde hacía varios años, y resultaba difícil de modificar o ampliar. Esta limitación me llevó a desarrollar una solución propia desde cero, basada en un enfoque más flexible y adaptado a los requerimientos actuales de WebXR.
+
+% [SUGERENCIA: Insertar aquí una tabla comparativa o breve análisis entre aterrain y la nueva solución propuesta]
+% \begin{table}
+%   \centering
+%   \begin{tabular}{lcc}
+%     \toprule
+%     \textbf{Característica} & \texttt{aterrain} & \texttt{babia-map} \\
+%     \midrule
+%     Última actualización & 2018 & 2025 \\
+%     Modificable por el usuario & Limitado & Totalmente flexible \\
+%     Compatibilidad con WebXR moderna & Parcial & Completa \\
+%     Soporte para sombreadores personalizados & No & Sí \\
+%     \bottomrule
+%   \end{tabular}
+%   \caption{Comparativa entre \texttt{aterrain} y \texttt{babia-map}}
+%   \label{tab:comparativa}
+% \end{table}
 
 En paralelo, comencé a investigar cómo obtener y renderizar teselas virtuales (\textit{tiles}) que sirvieran como base para construir el mapa tridimensional. Esta búsqueda me llevó a estudiar el uso de mapas de altura codificados en imágenes RGB, así como técnicas de sombreado utilizando \texttt{WebGL} para representar distintas elevaciones y biomas de forma visual.
 
-Gran parte del conocimiento adquirido provino de la consulta de recursos disponibles en línea, especialmente vídeos tutoriales que explicaban el proceso de generación de mallas tridimensionales a partir de mapas de altura, así como su posterior coloración mediante sombreadores. Los vídeos se pueden encontrar en \cite{youtube:terrain1} y \cite{youtube:terrain2}. Estos recursos fueron esenciales para entender cómo convertir una imagen en una geometría modificable y cómo aplicar efectos visuales mediante programación gráfica.
+Gran parte del conocimiento adquirido provino de la consulta de recursos disponibles en línea, especialmente vídeos tutoriales que explicaban el proceso de generación de mallas tridimensionales a partir de mapas de altura, así como su posterior coloración mediante sombreadores. Estos recursos fueron esenciales para entender cómo convertir una imagen en una geometría modificable y cómo aplicar efectos visuales mediante programación gráfica.
+
+% [SUGERENCIA: Añadir enlaces en un apéndice o sección de recursos complementarios a los vídeos más relevantes]
+% \begin{itemize}
+%   \item Tutorial sobre terrain mesh y heightmaps: \url{https://www.youtube.com/watch?v=XXXXXX}
+%   \item Introducción a shaders en WebGL: \url{https://www.youtube.com/watch?v=YYYYYY}
+% \end{itemize}
 
 A continuación, muestro las tareas que se propusieron para esta primera fase del proyecto:
 
@@ -761,7 +783,7 @@ A continuación, muestro las tareas que se propusieron para esta primera fase de
         \item Desarrollar el componente \textit{babia-map}. En este caso específico se utilizó el fichero \texttt{aframe-babia-components/components/visualizers/babia-map.js}, especificado en \texttt{aframe-babia-components/index.js}. Para integrar todo en la página local, se debió añadir en \texttt{aframe-babia-components/index.html}.
         \item Se necesitará utilizar:
         \begin{itemize}
-            \item BabiaXR.
+            \item Babia XR.
             \item A-Frame Components.
             \item Bibliotecas JS/HTML/A-Frame.
         \end{itemize}
@@ -1006,7 +1028,7 @@ En caso de error durante la carga del mapa de desplazamiento, se captura el fall
 
 En resumen, este código permite cargar y preparar una textura de desplazamiento a partir de datos de elevación, aplicar distintos tipos de texturas visuales sobre una geometría plana subdividida, y finalmente crear una malla con shaders personalizados que simulan un terreno 3D realista en una escena WebGL gestionada con la biblioteca \texttt{three.js}.
 
-\textbf{WebGL} (Web Graphics Library) es una API de JavaScript para renderizar gráficos 3D y 2D interactivos dentro de cualquier navegador compatible, sin necesidad de instalar \textit{plugins} adicionales. Se basa en \textit{OpenGL ES}, una versión reducida de OpenGL diseñada para sistemas embebidos como móviles o navegadores.
+\textbf{WebGL} (Web Graphics Library) es una API de JavaScript para renderizar gráficos 3D y 2D interactivos dentro de cualquier navegador compatible, sin necesidad de instalar plugins adicionales. Se basa en \textit{OpenGL ES}, una versión reducida de OpenGL diseñada para sistemas embebidos como móviles o navegadores.
 
 WebGL permite que los desarrolladores creen visualizaciones gráficas complejas, simulaciones físicas, juegos 3D o aplicaciones de realidad virtual directamente en la web. Gracias a su integración con HTML5, WebGL es una tecnología fundamental para interfaces inmersivas y entornos tridimensionales. ¿Por qué es importante?
 
@@ -1386,15 +1408,6 @@ Durante las pruebas realizadas se ha validado que el sistema funciona de forma f
 
 \medskip
 
-\noindent\textbf{Enlaces relevantes:}
-\begin{itemize}
-    \item Sitio web del proyecto: \url{https://myweb-1570c5.gitlab.io/}
-    \item Repositorio del código fuente: \url{https://gitlab.com/babiaxr/aframe-babia-components}
-    \item Vídeo de demostración: \url{https://youtu.be/1KY6OlpgMOQ}
-\end{itemize}
-
-\medskip
-
 Como limitación detectada, cabe señalar que la resolución del terreno y la carga de texturas depende directamente de la velocidad de conexión a Internet y del tamaño de teselas descargadas. Además, al tratarse de un prototipo en fase inicial, no se han implementado aún mecanismos avanzados de cacheo o carga progresiva.
 
 \medskip
@@ -1704,7 +1717,6 @@ El botón \textit{grip} al nivel del dedo corazón provoca que los botones de lo
 
 % Las siguientes dos instrucciones es todo lo que necesitas
 % para incluir las citas en la memoria
-\nocite{*}
 \bibliographystyle{abbrv}
 \bibliography{memoria}  % memoria.bib es el nombre del fichero que contiene
 % las referencias bibliográficas. Abre ese fichero y mira el formato que tiene,
@@ -1713,5 +1725,12 @@ El botón \textit{grip} al nivel del dedo corazón provoca que los botones de lo
 % y verás que lo puedes hacer de manera sencilla.
 % Más información: 
 % http://texblog.org/2014/04/22/using-google-scholar-to-download-bibtex-citations/
+
+\noindent\textbf{Enlaces relevantes:}
+\begin{itemize}
+    \item Sitio web del proyecto: \url{https://myweb-1570c5.gitlab.io/}
+    \item Repositorio del código fuente: \url{https://gitlab.com/babiaxr/aframe-babia-components}
+    \item Vídeo de demostración: \url{https://youtu.be/1KY6OlpgMOQ}
+\end{itemize}
 
 \end{document}
