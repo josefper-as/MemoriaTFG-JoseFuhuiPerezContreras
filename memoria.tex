@@ -712,6 +712,9 @@ Estas herramientas, si bien no sustituyen el conocimiento técnico, han servido 
 % Es la parte más importante de la memoria, porque describe lo que has hecho tú.
 % Eso sí, normalmente aconsejo no poner código, sino diagramas.
 
+\section{Fase 1: Inicio y puesta en marcha (09/2024 - 10/2024)}
+\label{sec:inicio}
+
 Durante el mes de septiembre de 2024 inicié el contacto con mi tutor de Trabajo de Fin de Grado con el objetivo de plantear una propuesta de proyecto basada en la tecnología A-Frame. La elección de esta tecnología estuvo motivada por varios factores. En primer lugar, ya existía una base previa de desarrollo gracias al proyecto \textit{BabiaXR}, realizado por personal docente de la Universidad, lo cual me permitiría apoyarme en ejemplos funcionales y resolver dudas de forma más ágil. En segundo lugar, A-Frame ofrecía un campo aún por explorar en profundidad en distintos aspectos de la realidad extendida, lo que abría la posibilidad de aportar una solución original y útil.
 
 Finalmente, me decanté por diseñar un visor de mapas tridimensionales para realidad extendida, compatible tanto con realidad virtual como con realidad aumentada. La representación de mapas en entornos de realidad virtual presenta diversos desafíos: muchos de los visores existentes son complejos de manejar, poco interactivos o requieren una gran cantidad de recursos computacionales. El objetivo de este trabajo ha sido desarrollar un componente personalizado, llamado \texttt{babia-map}, que permita representar mapas en 3D de forma eficiente y accesible en A-Frame, optimizando tanto la experiencia de usuario como el rendimiento gráfico.
@@ -726,7 +729,7 @@ Nada más clonar el repositorio, fue imprescindible realizar un \texttt{npm inst
 
 Es muy importante ejecutar el comando \texttt{npm run dist} cada vez que se modifique un componente para poder actualizar el directorio de distribuciones. Para trabajar en el servidor, el comando para lanzarlo es \texttt{npm run ssldev}.
 
-\section{Proceso de formación} 
+\section{Fase 2: Proceso de formación (10/2024 - 02/2025)} 
 \label{sec:formacion}
 
 Desde octubre de 2024 hasta enero de 2025, dediqué una fase inicial a experimentar con componentes existentes del ecosistema BabiaXR, lo cual me permitió familiarizarme con la lógica de desarrollo modular de A-Frame. Esta fase incluyó pruebas en local, modificaciones de componentes ya existentes y la exploración de nuevas funcionalidades.
@@ -738,6 +741,9 @@ Uno de los primeros pasos técnicos fue realizar una revisión de componentes si
 En paralelo, comencé a investigar cómo obtener y renderizar teselas virtuales (\textit{tiles}) que sirvieran como base para construir el mapa tridimensional. Esta búsqueda me llevó a estudiar el uso de mapas de altura codificados en imágenes RGB, así como técnicas de sombreado utilizando \texttt{WebGL} para representar distintas elevaciones y biomas de forma visual.
 
 Gran parte del conocimiento adquirido provino de la consulta de recursos disponibles en línea, especialmente vídeos tutoriales que explicaban el proceso de generación de mallas tridimensionales a partir de mapas de altura, así como su posterior coloración mediante sombreadores. Los vídeos se pueden encontrar en \cite{youtube:terrain1} y \cite{youtube:terrain2}. Estos recursos fueron esenciales para entender cómo convertir una imagen en una geometría modificable y cómo aplicar efectos visuales mediante programación gráfica.
+
+\subsection{Objetivos}
+\label{subsec:objetivos-f2}
 
 A continuación, muestro las tareas que se propusieron para esta primera fase del proyecto:
 
@@ -767,6 +773,9 @@ A continuación, muestro las tareas que se propusieron para esta primera fase de
         \end{itemize}
     \end{itemize}
 \end{itemize}
+
+\subsection{Resultados}
+\label{subsec:resultados-f2}
 
 Luego, las tareas acabaron en el siguiente estado:
 
@@ -821,7 +830,7 @@ Finalmente, se revisaron los formatos de acceso a datos cartográficos. Se disti
 
 La documentación de referencia fue \url{https://docs.mapbox.com/api/maps/raster-tiles/}, y se consultó un ejemplo práctico desde \url{https://docs.mapbox.com/data/tilesets/guides/access-elevation-data/}. Se probó el uso del parámetro opcional \texttt{@2x}, que permite solicitar imágenes de mayor resolución (512x512) en lugar de las predeterminadas (256x256), con el objetivo de reducir el número total de solicitudes al cubrir un área más amplia por imagen.
 
-\section{Arquitectura general} 
+\section{Fase 3: Arquitectura general (02/2025 - 05/2025)} 
 \label{sec:arquitectura}
 
 % Si tu proyecto es un software, siempre es bueno poner la arquitectura (que es cómo se estructura tu programa a ``vista de pájaro'').
@@ -848,6 +857,9 @@ La documentación de referencia fue \url{https://docs.mapbox.com/api/maps/raster
 % Por ejemplo: En la figura~\ref{fig:arquitectura} se puede ver que la estructura del \emph{parser} básico, que consta de seis componentes diferentes: los datos se obtienen de la red, y según el tipo de dato, se pasará a un \emph{parser} específico y bla, bla, bla\ldots
 
 % Si utilizas una base de datos, no te olvides de incluir también un diagrama de entidad-relación.
+
+\subsection{Sprint 1: Creación de la textura (02/2025 - 03/2025)}
+\label{subsec:canva-f3-s1}
 
 Una vez terminada la fase de formación, comencé a desarrollar el componente como tal. Aprovechando la capacidad de \textit{Three.js} de crear mallas capaces de simular un terreno gracias a una imagen en blanco en negro, se utilizó la API de MapBox para obtener una imagen de un mapa en formato RGB. Lo que faltaba era convertir esa imagen a escala de grises para que \textit{Three.js} por sí solo fuese capaz de interpretar la información.
 
@@ -902,6 +914,9 @@ El proceso comienza con la creación de un objeto \texttt{Image}, al cual se le 
 
 Una vez que la imagen se ha cargado correctamente, se dibuja sobre un objeto \texttt{canvas} de HTML, invirtiendo previamente su eje vertical para corregir la orientación con respecto a WebGL. A continuación, se accede a los datos de píxeles mediante el contexto 2D del canvas y se extrae un array de valores RGBA.
 
+\subsection{Sprint 2: Generación de la malla (03/2025 - 04/2025)}
+\label{subsec:malla-f3-s2}
+
 El núcleo del algoritmo reside en la iteración sobre los valores RGB de cada píxel. Utilizando la fórmula proporcionada por Mapbox, se calcula la elevación en metros:
 
 \[
@@ -935,6 +950,21 @@ Una vez se ha cargado la imagen, se crea la malla y se le añade como textura el
 
 El código presentado tiene como objetivo principal la construcción de una malla tridimensional que representa un terreno, utilizando mapas de desplazamiento y diferentes tipos de texturas procedentes de diversas fuentes, como Mapbox o OpenStreetMap. La figura~\ref{fig:malla} muestra un diagrama de flujo del funcionamiento de esta parte del código. A continuación se describe en detalle el funcionamiento del mismo.
 
+Una vez configurado el material, se genera la geometría del terreno mediante un plano (\texttt{PlaneGeometry}) con las dimensiones y subdivisiones indicadas en \texttt{data}. Esta geometría representa la superficie sobre la que se aplicará la textura y el desplazamiento.
+
+A partir de la geometría y el material definidos, se crea la malla 3D (\texttt{Mesh}) que representa el terreno. Se ajusta su rotación para que quede orientada correctamente (girada 90 grados sobre el eje X) y se posiciona en el espacio 3D.
+
+Finalmente, esta malla se añade a la entidad correspondiente en la escena 3D mediante el método \texttt{setObject3D}, permitiendo que forme parte del renderizado. El estado y los datos actuales se imprimen en la consola para facilitar el seguimiento y depuración del proceso.
+
+En caso de error durante la carga del mapa de desplazamiento, se captura el fallo y se muestra un mensaje en la consola para alertar al usuario o desarrollador.
+
+En resumen, este código permite cargar y preparar una textura de desplazamiento a partir de datos de elevación, aplicar distintos tipos de texturas visuales sobre una geometría plana subdividida, y finalmente crear una malla con shaders personalizados que simulan un terreno 3D realista en una escena WebGL gestionada con la biblioteca \texttt{three.js}.
+
+\subsection{Sprint 3: Desarrollo del sistema de capas (04/2025 - 05/2025)}
+\label{subsec:malla-f3-s2}
+
+Una vez demostrado que era posible crear el componente, se pasó al siguiente \textit{sprint}. Quedaba personalizar el terreno para darle más libertad de juego al usuario.
+
 En primer lugar, se construye una URL para obtener un mapa de desplazamiento desde la API de Mapbox, empleando parámetros dinámicos como el nivel de zoom, las coordenadas de teselas (x, y) y un token de acceso. Esta URL se utiliza para cargar una textura que contiene información sobre la elevación del terreno en formato RGB.
 
 A continuación, se invoca la función \texttt{loadDisplacementMap} con dicha URL. Esta función devuelve una promesa que, cuando se resuelve correctamente, proporciona la textura con la información de desplazamiento. Si la carga falla, se captura el error y se informa mediante un mensaje en la consola.
@@ -950,6 +980,8 @@ El código contempla dos ramas principales dependiendo del tipo de textura espec
   
   \item Para otros tipos de textura, el código selecciona una URL distinta según el tipo indicado (por ejemplo, \texttt{"Standard"}, \texttt{"Satellite"}, \texttt{"Hot"}, \texttt{"Cycle"} o \texttt{"Transport"}). Se carga la textura correspondiente mediante \texttt{THREE.TextureLoader}. Después, se configuran los \textit{uniforms} para incluir tanto la textura de desplazamiento como la textura cargada, y se crea un \texttt{ShaderMaterial} con shaders alternativos (\texttt{vertexShader2} y \texttt{fragmentShader2}).
 \end{itemize}
+
+\subsubsection*{APIs}
 
 El componente utiliza diferentes proveedores de mapas a través de sus APIs para renderizar imágenes de teselas (\textit{tiles}) en función del tipo de textura seleccionado. Cada API devuelve una imagen \textit{rasterizada} (formato \texttt{.png}) correspondiente a una porción del mapa en coordenadas \texttt{x}, \texttt{y} y un nivel de \texttt{zoom} determinado.
 
@@ -996,15 +1028,7 @@ Transport & Thunderforest & Sí & Transporte público \\
 
 Cada uno de estos mapas ofrece una visión distinta del terreno y puede utilizarse en función del contexto de la aplicación: por ejemplo, el estilo \textit{Satellite} es ideal para aplicaciones inmersivas realistas, mientras que \textit{Cycle} o \textit{Transport} se prestan mejor a interfaces informativas.
 
-Una vez configurado el material, se genera la geometría del terreno mediante un plano (\texttt{PlaneGeometry}) con las dimensiones y subdivisiones indicadas en \texttt{data}. Esta geometría representa la superficie sobre la que se aplicará la textura y el desplazamiento.
-
-A partir de la geometría y el material definidos, se crea la malla 3D (\texttt{Mesh}) que representa el terreno. Se ajusta su rotación para que quede orientada correctamente (girada 90 grados sobre el eje X) y se posiciona en el espacio 3D.
-
-Finalmente, esta malla se añade a la entidad correspondiente en la escena 3D mediante el método \texttt{setObject3D}, permitiendo que forme parte del renderizado. El estado y los datos actuales se imprimen en la consola para facilitar el seguimiento y depuración del proceso.
-
-En caso de error durante la carga del mapa de desplazamiento, se captura el fallo y se muestra un mensaje en la consola para alertar al usuario o desarrollador.
-
-En resumen, este código permite cargar y preparar una textura de desplazamiento a partir de datos de elevación, aplicar distintos tipos de texturas visuales sobre una geometría plana subdividida, y finalmente crear una malla con shaders personalizados que simulan un terreno 3D realista en una escena WebGL gestionada con la biblioteca \texttt{three.js}.
+\subsubsection*{Coloreado de mapa con WebGL}
 
 \textbf{WebGL} (Web Graphics Library) es una API de JavaScript para renderizar gráficos 3D y 2D interactivos dentro de cualquier navegador compatible, sin necesidad de instalar \textit{plugins} adicionales. Se basa en \textit{OpenGL ES}, una versión reducida de OpenGL diseñada para sistemas embebidos como móviles o navegadores.
 
@@ -1077,10 +1101,13 @@ Pasos:
 2. Dibujar ese color en pantalla (gl_FragColor).
 \end{verbatim}
 
-\section{Interfaz de usuario} 
-\label{sec:ui}
+\section{Fase 4: Interfaz de usuario (05/2025 - 06/2025)} 
+\label{subsec:ui-f4}
 
 Con el componente en pleno funcionamiento, ya solo quedaba crear una interfaz intuitiva y fácil de entender para que cualquiera supiera utilizar el componente. Primeramente, para facilitar la definición del \textit{token} se creó un formulario muy sencillo fuera de la escena HTML en el cual introducir la clave.
+
+\subsection{Sprint 1: Creación de botones (05/2025)}
+\label{subsec:botones-f4-s1}
 
 Junto con el componente, se aprovecharon los componentes de A-Frame (geometrías, planos, etc) para crear unos botones sencillos que permitieran hacer o quitar zoom y cambiar de capas. Esto sería mucho más rápido accesible que escribirlo directamente al declarar el objeto en HTML. De esta forma, el árbol DOM cobraría una forma mucho más parecida a su estructura final.
 
@@ -1131,10 +1158,9 @@ Junto con el componente, se aprovecharon los componentes de A-Frame (geometrías
 \caption{Árbol DOM simplificado del documento HTML}
 \end{figure}
 
-
 Para facilitar la interacción con los mapas de terreno en realidad virtual, se implementó un conjunto de botones y controles ubicados en los mandos (controladores) de las gafas de realidad extendida. Estos controles permiten modificar el zoom, cambiar la posición del mapa y alternar entre diferentes capas o texturas que pintan la malla del terreno.
 
-\subsection{Descripción de los controles implementados}
+\subsubsection*{Descripción de los controles implementados}
 
 Se crearon los siguientes elementos de interfaz:
 
@@ -1144,7 +1170,7 @@ Se crearon los siguientes elementos de interfaz:
     \item \textbf{Botones de cambio de capa:} Dos botones en el mando izquierdo que permiten cambiar la capa o textura del mapa, alternando entre distintos estilos predefinidos, como \textit{Coloured}, \textit{Cycle}, \textit{Transport}, \textit{Standard}, \textit{Satellite} y \textit{Hot}.
 \end{itemize}
 
-\subsection{Lógica de interacción y código}
+\subsubsection*{Lógica de interacción y código}
 
 La lógica para gestionar estos botones se implementó dentro del método \texttt{init} del componente A-Frame. A continuación se describen las funcionalidades principales:
 
@@ -1167,12 +1193,10 @@ La lógica para gestionar estos botones se implementó dentro del método \textt
 
 Este diseño permite una interacción intuitiva y rápida con el mapa, adaptándose al entorno de realidad extendida y aprovechando los mandos disponibles para controlar cómodamente el zoom, la posición y la apariencia del terreno.
 
-\section{Recolección de datos} 
-\label{sec:coordenadas}
+\subsection{Sprint 2: Recolección de datos (05/2025 - 06/2025)} 
+\label{subsec:coordenadas-f4-s2}
 
 Como muestra del potencial que tiene este proyecto, se creó también una funcionalidad extra que permite guardar las coordenadas reales del punto del mapa al que se esté apuntando. La idea era conseguir apuntar a cualquier zona del mapa, capturar los valores y hacer el cálculo necesario para obtener la latitud y longitud reales del punto señalado.
-
-\subsection{Captura de coordenadas geográficas mediante interacción en VR}
 
 Una de las funcionalidades más destacadas implementadas en el componente \texttt{babia-map} del sistema \texttt{babiaxr} consiste en la posibilidad de capturar coordenadas geográficas reales (latitud y longitud) a partir de una interacción directa con el mapa tridimensional mediante los mandos de realidad virtual.
 
@@ -1231,8 +1255,8 @@ La Figura~\ref{fig:flujo-coordenadas} muestra el diagrama de flujo del proceso c
     \label{fig:flujo-coordenadas}
 \end{figure}
 
-\section{Botones dinámicos} 
-\label{sec:botones-dinamicos}
+\subsection{Sprint 3: Botones dinámicos (06/2025)} 
+\label{subsec:botones-dinamicos}
 
 Para dejar un componente funcional por cuenta propia, se desarrolló la funcionalidad necesaria para que los botones agregados anteriormente al código HTML ya no tuvieran que añadirse manualmente. De esta forma, con una serie de automatizaciones y nuevas propiedades para personalizar los botones en una configuración más amigable con el usuario, la interfaz se volvió dinámica.
 
@@ -1366,6 +1390,9 @@ Por último, para saber si realmente funcionaba el cálculo de las coordenadas, 
 
 % Si es una herramienta de análisis lo que has realizado, aquí puedes poner ejemplos de haberla utilizado para que se vea su utilidad.
 
+\section{Babia-Map}
+\label{sec:babiamap}
+
 Al finalizar el desarrollo del componente \texttt{babia-map}, se han conseguido implementar y validar con éxito las siguientes funcionalidades:
 
 \begin{itemize}
@@ -1378,11 +1405,51 @@ Al finalizar el desarrollo del componente \texttt{babia-map}, se han conseguido 
 
 \medskip
 
-Se ha creado además una \textbf{página web del proyecto}, publicada mediante GitLab Pages, donde cualquier usuario puede consultar la información técnica, ver una demostración o acceder directamente al visualizador. Esta web incluye también un \textbf{vídeo en YouTube} que muestra el funcionamiento completo del sistema en un entorno de realidad virtual.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/producto-final.png}
+    \caption{Ejemplo del producto final obtenido.}
+    \label{fig:producto-final}
+\end{figure}
+
+El componente es en su mayor parte personalizable, las capas pueden cambiar mediante los botones, el zoom se puede modificar y también es posible desplazarse. Todos los botones, a su vez, son dinámicos, de tal forma que se puede especificar su posición y otros atributos relevantes.
 
 \medskip
 
 Durante las pruebas realizadas se ha validado que el sistema funciona de forma fluida en entornos XR y que responde correctamente a las interacciones del usuario. Se han llevado a cabo pruebas tanto en modo escritorio como en realidad virtual, verificando que los botones responden de forma intuitiva y que las capas se actualizan correctamente sin interrupciones perceptibles.
+
+\medskip
+
+Como limitación detectada, cabe señalar que la resolución del terreno y la carga de texturas depende directamente de la velocidad de conexión a Internet y del tamaño de teselas descargadas. Además, al tratarse de un prototipo en fase inicial, no se han implementado aún mecanismos avanzados de cacheo o carga progresiva.
+
+\medskip
+
+Aun así, el componente \texttt{babia-map} representa una base sólida para el desarrollo de sistemas de visualización cartográfica inmersiva en XR, permitiendo una experiencia interactiva, educativa y potencialmente útil en entornos de simulación, formación o turismo virtual.
+
+El resultado final es un \textit{visualizer} totalmente funcional, pero, sobre todo, con una programación totalmente escalable y abierta a modificaciones.
+
+\section{Casos de Uso}
+\label{sec:casos-uso}
+
+Se han creado tres demos para demostrar la funcionalidad del componente. La captura~ref{fig:demos} recoge las entradas en el sitio web.
+
+\begin{itemize}
+    \item La primera es un terreno generado con una malla de tamaño considerable, para que de la sensación de tratarse de un mapa inmersivo en el que se puede navegar como si estuvieras caminando por encima. Los botones son estáticos, pero cumplen con toda su funcionalidad.
+    \item La segunda demo busca demostrar la capacidad de tener varios componentes en un mismo escenario, haciendo incapié en la posibilidad de unificar varios mapas de diferentes teselas para buscar una mayor resolución en una hipotética implementación futura. Esto, por supuesto, se ve limitado al número de usos que tenga el \textit{token} de MapBox.
+    \item La tercera demo muestra las pirámides de Giza. Su objetivo es demostrar que es posible obtener unas coordenadas reales y altamente precisas al apuntar a una zona del mapa concreta.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/demos.png}
+    \caption{Demos disponibles en la página web del proyecto de BabiaXR.}
+    \label{fig:demos}
+\end{figure}
+
+\section{Disponiblidad del \textit{software}}
+\label{sec:disponibilidad}
+
+La \textbf{página web del proyecto} está publicada mediante GitLab Pages donde cualquier usuario puede consultar la información técnica, ver una demostración o acceder directamente al visualizador. Esta web incluye también un \textbf{vídeo en YouTube} que muestra el funcionamiento completo del sistema en un entorno de realidad virtual.
 
 \medskip
 
@@ -1393,13 +1460,7 @@ Durante las pruebas realizadas se ha validado que el sistema funciona de forma f
     \item Vídeo de demostración: \url{https://youtu.be/1KY6OlpgMOQ}
 \end{itemize}
 
-\medskip
-
-Como limitación detectada, cabe señalar que la resolución del terreno y la carga de texturas depende directamente de la velocidad de conexión a Internet y del tamaño de teselas descargadas. Además, al tratarse de un prototipo en fase inicial, no se han implementado aún mecanismos avanzados de cacheo o carga progresiva.
-
-\medskip
-
-Aun así, el componente \texttt{babia-map} representa una base sólida para el desarrollo de sistemas de visualización cartográfica inmersiva en XR, permitiendo una experiencia interactiva, educativa y potencialmente útil en entornos de simulación, formación o turismo virtual.
+El \textit{software} es de código abierto, por lo que cualquier persona tiene la posibilidad de hacer sus propios cambios o crear implementaciones personalizadas. También existe la posibilidad de pedir fusionar proyectos para aprobar esos cambios.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
