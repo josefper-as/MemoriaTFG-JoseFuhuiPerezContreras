@@ -158,7 +158,7 @@ y por haberme dado la oportunidad de estudiar en esta universidad.
 \markboth{RESUMEN}{RESUMEN} % encabezado
 
 Este proyecto tiene como objetivo la creación de un componente en tres dimensiones compatible
-con la realidad virtual. El componente utiliza \textit{APIS} de \textit{Mapbox} y \textit{OpenStreetMap} 
+con la realidad virtual. El componente utiliza \textit{APIs} de \textit{Mapbox} y \textit{OpenStreetMap} 
 para la creación de mapas de terreno en tres dimensiones. Se pretende que el componente
 pueda ser utilizado en aplicaciones de realidad virtual y que sea fácil de integrar
 en otros proyectos.
@@ -456,7 +456,7 @@ La realización de este Trabajo de Fin de Grado se ha desarrollado a lo largo de
 
   \item \textbf{Abril de 2025:} Desarrollo de un sistema de capas múltiples, incluyendo la creación de una interfaz gráfica de usuario para gestionar su visualización, así como la incorporación de un mecanismo para trabajar con el token de Mapbox.
 
-  \item \textbf{Mayo de 2025:} Implementación de controles interactivos compatibles con realidad virtual (botones visibles en las gafas VR), así como la posibilidad de modificar coordenadas y niveles de zoom. Redacción y finalización progresiva de la memoria del TFG.
+  \item \textbf{Mayo de 2025:} Implementación de controles interactivos compatibles con realidad virtual (botones visibles en las gafas XR), así como la posibilidad de modificar coordenadas y niveles de zoom. Redacción y finalización progresiva de la memoria del TFG.
 
   \item \textbf{Finales de mayo e inicios de junio de 2025:} Corrección y revisión final de la memoria, preparación de la defensa.
 \end{itemize}
@@ -531,13 +531,13 @@ El objetivo principal de BabiaXR es facilitar la creación de aplicaciones inmer
 En el contexto de este trabajo, BabiaXR se utiliza como entorno base para la integración del componente de visualización de mapas tridimensionales. La elección de esta plataforma responde a dos motivos principales:
 
 \begin{enumerate}
-  \item \textbf{Necesidad técnica:} proporciona la infraestructura necesaria para desplegar escenas VR complejas, integrando capas de información geoespacial, controles de navegación y representaciones 3D sobre terrenos reales.
+  \item \textbf{Necesidad técnica:} proporciona la infraestructura necesaria para desplegar escenas XR complejas, integrando capas de información geoespacial, controles de navegación y representaciones 3D sobre terrenos reales.
   \item \textbf{Vinculación institucional:} al tratarse de una herramienta desarrollada dentro de la propia universidad, su uso refuerza la colaboración entre estudiantes y líneas de investigación del centro, además de facilitar el acceso a soporte técnico y documentación específica.
 \end{enumerate}
 
 BabiaXR se apoya en un conjunto de tecnologías modernas y bien consolidadas:
 \begin{itemize}
-  \item \textit{A-Frame}: \textit{framework} basado en HTML para crear experiencias VR accesibles desde navegadores.
+  \item \textit{A-Frame}: \textit{framework} basado en HTML para crear experiencias XR accesibles desde navegadores.
   \item \textit{Three.js}: biblioteca JavaScript que permite renderizar gráficos 3D en WebGL con gran flexibilidad.
   \item \textit{WebXR}: estándar para ejecutar experiencias inmersivas directamente en el navegador, compatible con múltiples dispositivos.
 \end{itemize}
@@ -640,7 +640,7 @@ En este proyecto se hace uso de estas APIs para obtener datos de elevación y es
 \section{Gafas de Realidad Virtual: Meta Quest 3}
 \label{sec:gafas}
 
-Las Meta Quest 3, desarrolladas por Meta (anteriormente Oculus), son unas gafas de realidad virtual autónomas que permiten ejecutar aplicaciones VR sin necesidad de un ordenador externo. Disponen de controladores hápticos, sensores de movimiento y capacidad de realidad mixta (passthrough a color), lo que las convierte en una herramienta ideal para pruebas e implementación de experiencias inmersivas.
+Las Meta Quest 3, desarrolladas por Meta (anteriormente Oculus), son unas gafas de realidad virtual autónomas que permiten ejecutar aplicaciones XR sin necesidad de un ordenador externo. Disponen de controladores hápticos, sensores de movimiento y capacidad de realidad mixta (passthrough a color), lo que las convierte en una herramienta ideal para pruebas e implementación de experiencias inmersivas.
 
 Gracias al soporte de WebXR en su navegador interno, estas gafas permiten ejecutar el componente desarrollado directamente desde la web, lo que facilita el proceso de validación en un entorno real.
 
@@ -656,7 +656,7 @@ Gracias al soporte de WebXR en su navegador interno, estas gafas permiten ejecut
 \section{Editor de Código: Visual Studio Code}
 \label{sec:vscode}
 
-Visual Studio Code (VS Code) es un editor de código fuente desarrollado por Microsoft, ampliamente adoptado por la comunidad de desarrolladores. Ofrece integración con sistemas de control de versiones, depuración, resaltado de sintaxis y soporte para extensiones que facilitan el desarrollo web y VR.
+Visual Studio Code (VS Code) es un editor de código fuente desarrollado por Microsoft, ampliamente adoptado por la comunidad de desarrolladores. Ofrece integración con sistemas de control de versiones, depuración, resaltado de sintaxis y soporte para extensiones que facilitan el desarrollo web y XR.
 
 Durante el desarrollo del proyecto, se ha utilizado como entorno principal de trabajo, aprovechando su integración con herramientas como Git, su terminal integrada para la ejecución de comandos Node.js y su compatibilidad con tecnologías web modernas.
 
@@ -719,9 +719,9 @@ Durante el mes de septiembre de 2024 inicié el contacto con mi tutor de Trabajo
 
 Finalmente, me decanté por diseñar un visor de mapas tridimensionales para realidad extendida, compatible tanto con realidad virtual como con realidad aumentada. La representación de mapas en entornos de realidad virtual presenta diversos desafíos: muchos de los visores existentes son complejos de manejar, poco interactivos o requieren una gran cantidad de recursos computacionales. El objetivo de este trabajo ha sido desarrollar un componente personalizado, llamado \texttt{babia-map}, que permita representar mapas en 3D de forma eficiente y accesible en A-Frame, optimizando tanto la experiencia de usuario como el rendimiento gráfico.
 
-Para lograr este objetivo, fue imprescindible adquirir un conocimiento detallado sobre el funcionamiento interno de A-Frame. Esta herramienta está construida sobre la librería gráfica \texttt{three.js}, que ofrece una capa de abstracción para desarrollar experiencias WebXR utilizando HTML y componentes declarativos. A lo largo del desarrollo, fue necesario aprender a manipular directamente tanto entidades de A-Frame como estructuras nativas de \texttt{three.js}, incluyendo geometrías, materiales, texturas y sombreadores (\textit{shaders}).
+Para lograr este objetivo, fue imprescindible adquirir un conocimiento detallado sobre el funcionamiento interno de A-Frame. Esta herramienta está construida sobre la librería gráfica \texttt{Three.js}, que ofrece una capa de abstracción para desarrollar experiencias WebXR utilizando HTML y componentes declarativos. A lo largo del desarrollo, fue necesario aprender a manipular directamente tanto entidades de A-Frame como estructuras nativas de \texttt{Three.js}, incluyendo geometrías, materiales, texturas y sombreadores (\textit{shaders}).
 
-El código fuente se debía realizar en JavaScript, pues A-Frame funciona dentro de HTML. \textit{NodeJS} se puede definir como el \textit{software} para JavaScript equivalente a lo que es \textit{Django} para \textit{Python}. Se utilizaron varios comandos cada vez que se accedía al entorno de desarrollo. Primeramente se realizó un fork del proyecto original y después se clonó el repositorio en local.
+El código fuente se debía realizar en JavaScript, pues A-Frame funciona dentro de HTML. \textit{NodeJS} se puede definir como el \textit{software} para JavaScript equivalente a lo que es \textit{Django} para \textit{Python}. Se utilizaron varios comandos cada vez que se accedía al entorno de desarrollo. Primeramente se realizó un \textit{fork} del proyecto original y después se clonó el repositorio en local.
 
 Para utilizar \textit{NodeJS} se necesita el comando \texttt{nvm}. Con el comando \texttt{nvm use stable} se establecería la versión actual de \textit{NodeJS} en el directorio de trabajo. En mi caso, he estado trabajando con una versión más antigua, así que he utilizado el comando \texttt{nvm use 21.7.1}. Es necesario ejecutar este comando por cada terminal nueva que se despliegue, pues la versión configurada por defecto no tiene por qué ser esta. Para comprobar la versión, es necesario utilizar el comando \texttt{nvm ls}. 
 
@@ -958,7 +958,7 @@ Finalmente, esta malla se añade a la entidad correspondiente en la escena 3D me
 
 En caso de error durante la carga del mapa de desplazamiento, se captura el fallo y se muestra un mensaje en la consola para alertar al usuario o desarrollador.
 
-En resumen, este código permite cargar y preparar una textura de desplazamiento a partir de datos de elevación, aplicar distintos tipos de texturas visuales sobre una geometría plana subdividida, y finalmente crear una malla con shaders personalizados que simulan un terreno 3D realista en una escena WebGL gestionada con la biblioteca \texttt{three.js}.
+En resumen, este código permite cargar y preparar una textura de desplazamiento a partir de datos de elevación, aplicar distintos tipos de texturas visuales sobre una geometría plana subdividida, y finalmente crear una malla con shaders personalizados que simulan un terreno 3D realista en una escena WebGL gestionada con la biblioteca \texttt{Three.js}.
 
 \subsection{Sprint 3: Desarrollo del sistema de capas (04/2025 - 05/2025)}
 \label{subsec:malla-f3-s2}
@@ -992,7 +992,7 @@ El componente utiliza diferentes proveedores de mapas a través de sus APIs para
 
     \item \textbf{Mapbox Satélite (Satellite):} \\
     \url{https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/\{zoom\}/\{x\}/\{y\}?access_token=\{token\}} \\
-    Mapbox ofrece imágenes satelitales de alta resolución. Su uso requiere el registro en su página (\url{https://mapbox.com}) para obtener un token de acceso (API Key). El servicio tiene un plan gratuito limitado, por lo que es necesario controlar el número de solicitudes mensuales.
+    Mapbox ofrece imágenes satelitales de alta resolución. Su uso requiere el registro en su página (\url{https://mapbox.com}) para obtener un token de acceso (\textit{API Key}). El servicio tiene un plan gratuito limitado, por lo que es necesario controlar el número de solicitudes mensuales.
 
     \item \textbf{Humanitarian OpenStreetMap Team (Hot):} \\
     \url{https://tile-a.openstreetmap.fr/hot/\{zoom\}/\{x\}/\{y\}.png} \\
@@ -1175,11 +1175,11 @@ Se crearon los siguientes elementos de interfaz:
 La lógica para gestionar estos botones se implementó dentro del método \texttt{init} del componente A-Frame. A continuación se describen las funcionalidades principales:
 
 \begin{itemize}
-    \item \textbf{Detección de controladores:} Se buscaban las entidades correspondientes a los mandos derecho e izquierdo en la escena VR, buscando por ID o componentes específicos como \texttt{laser-controls} y \texttt{oculus-touch-controls}.
-    \item \textbf{Manejo de eventos:} Se definieron manejadores para cada acción: aumentar o disminuir zoom, mover la vista en una dirección, y cambiar la capa actual. Estos manejadores se asociaron a los botones mediante eventos de click.
+    \item \textbf{Detección de controladores:} Se buscaban las entidades correspondientes a los mandos derecho e izquierdo en la escena XR, buscando por ID o componentes específicos como \texttt{laser-controls} y \texttt{oculus-touch-controls}.
+    \item \textbf{Manejo de eventos:} Se definieron manejadores para cada acción: aumentar o disminuir zoom, mover la vista en una dirección, y cambiar la capa actual. Estos manejadores se asociaron a los botones mediante eventos de \textit{click}.
     \item \textbf{Actualización del mapa:} Cada vez que se realiza una acción, se actualizan los atributos del componente \texttt{babia-map} correspondientes a la posición (\texttt{x}, \texttt{y}), nivel de zoom (\texttt{zoom}) o textura (\texttt{textureType}), y se vuelve a construir la malla con la nueva configuración.
-    \item \textbf{Visibilidad de botones:} Se implementó una función para alternar la visibilidad de los botones en los mandos con el evento \texttt{gripdown}, permitiendo mostrar u ocultar la interfaz en VR.
-    \item \textbf{Configuración opcional:} La presencia de estos controles en los mandos se controla mediante una propiedad booleana del componente llamada \texttt{handsUI}. Cuando está activa, los botones aparecen pegados a las manos en VR; de lo contrario, pueden usarse controles de escritorio u otra interfaz.
+    \item \textbf{Visibilidad de botones:} Se implementó una función para alternar la visibilidad de los botones en los mandos con el evento \texttt{gripdown}, permitiendo mostrar u ocultar la interfaz en XR.
+    \item \textbf{Configuración opcional:} La presencia de estos controles en los mandos se controla mediante una propiedad booleana del componente llamada \texttt{handsUI}. Cuando está activa, los botones aparecen pegados a las manos en XR; de lo contrario, pueden usarse controles de escritorio u otra interfaz.
 \end{itemize}
 
 \medskip
@@ -1310,7 +1310,7 @@ El código relacionado construye una interfaz de usuario en A-Frame para realida
 
   \item \textbf{Creación de botones individuales:} La función \texttt{createButton} crea una entidad \texttt{a-text} con atributos como geometría (en este caso, un plano), color del material, valor de texto, tamaño, posición, rotación y clases CSS. Estos botones son interactivos y están preparados para detectar colisiones, tal como indican las clases \texttt{collidable} e \texttt{interactive-button}.
   
-  \item \textbf{Interfaz en mandos VR:} Si el parámetro \texttt{data.handsUi} está activo, se llama a \texttt{addButtons} usando las entidades de mano izquierda y derecha detectadas previamente, y se construyen los mismos menús descritos anteriormente pero anclados a los mandos del usuario.
+  \item \textbf{Interfaz en mandos XR:} Si el parámetro \texttt{data.handsUi} está activo, se llama a \texttt{addButtons} usando las entidades de mano izquierda y derecha detectadas previamente, y se construyen los mismos menús descritos anteriormente pero anclados a los mandos del usuario.
 \end{itemize}
 
 Este sistema permite construir una interfaz versátil tanto para escritorio como para entornos inmersivos, adaptando su presentación según la detección de mandos y configuraciones predefinidas.
@@ -1613,7 +1613,7 @@ El componente \texttt{babia-map} permite añadir una interfaz interactiva de bot
 \hline
 \textbf{Propiedad} & \textbf{Tipo (por defecto)} & \textbf{Descripción} \\
 \hline
-\texttt{handsUi} & boolean (true) & Habilita o deshabilita los botones en las manos VR. \\
+\texttt{handsUi} & boolean (true) & Habilita o deshabilita los botones en las manos XR. \\
 \texttt{coordinates} & vec2 & Coordenadas actuales del mapa apuntadas por la mano izquierda. \\
 \texttt{width} & number (1000) & Anchura total del plano sobre el que se proyecta el terreno. \\
 \texttt{height} & number (1000) & Altura total del plano sobre el que se proyecta el terreno. \\
@@ -1748,11 +1748,11 @@ Los botones aparecerán por defecto en la escena, pero se debe configurar una po
 
 Si se entrara a la realidad virtual o aumentada y se tuviera activada la propiedad \texttt{handsUi}, los botones estáticos se esconderían y perderían momentáneamente cualquier evento asociado.
 
-\subsection*{Compatibilidad con manos y VR}
+\subsection*{Compatibilidad con manos y XR}
 
 Si la propiedad \texttt{handsUi} está activada, los grupos de botones se adjuntan automáticamente a las entidades con identificador \texttt{leftHand} y \texttt{rightHand}, que representan las manos del usuario en dispositivos de realidad virtual con seguimiento de manos. Los botones pueden activarse mediante punteros láser o interacción directa en el espacio tridimensional.
 
-Solo la mano izquierda es capaz de apuntar y crear un marcador en el punto de colisión al hacer click. 
+Solo la mano izquierda es capaz de apuntar y crear un marcador en el punto de colisión al hacer clic. 
 
 El botón \textit{grip} al nivel del dedo corazón provoca que los botones de los mandos se oculten al ser pulsado.
 
